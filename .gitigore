@@ -1,0 +1,7 @@
+zappy_ref-v3.0.1/
+zappy_gui
+zappy_ai
+zappy_server
+gui/cmake_install.cmake
+gui/CMakeCache.txt
+gui/CMakeFiles/
