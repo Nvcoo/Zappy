@@ -81,16 +81,23 @@ int main(int argc, char **argv) {
 
     TcpClient client(host, port);
     if (!client.connectToServer()) {
-        std::cerr << "Failed to create socket or connect\n";
+        std::cerr << "Failed to connect\n";
         return 1;
     }
 
     // identify as GUI
-    client.send("GRAPHIC\n");
+    if (!client.sendAll("GRAPHIC\n")) {
+        std::cerr << "Failed to send GRAPHIC\n";
+        return 1;
+    }
 
     // minimal loop to show messages
     while (true) {
         auto messages = client.pollMessages();
+        if (!client.connectToServer()) {
+            std::cerr << "Connection lost\n";
+            break;
+        }
         for (auto &m : messages) {
             std::cout << "SERVER: " << m << std::endl;
         }
