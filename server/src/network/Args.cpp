@@ -12,12 +12,12 @@
 
 namespace network {
 
-void printUsage() {
+static void printUsage() {
     std::cerr << "USAGE: ./zappy_server -p port -x width -y height -n name1 name2 ... -c clientsNb -f freq" << std::endl;
     std::exit(84);
 }
 
-int toPositiveInt(const std::string &value)
+static int toPositiveInt(const std::string &value)
 {
     try {
         int result = std::stoi(value);
@@ -37,7 +37,7 @@ Args parseArgs(int ac, char **av) {
     args.width = 0;
     args.height = 0;
     args.clientsNb = 0;
-    args.freq = 0;
+    args.freq = 100;
 
     for (int i = 1; i < ac; i++) {
         std::string arg = av[i];
