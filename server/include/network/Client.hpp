@@ -5,10 +5,11 @@
 ** Client
 */
 
-#ifndef ARGS_HPP_
-    #define ARGS_HPP_
+#ifndef CLIENT_HPP_
+    #define CLIENT_HPP_
 
 #include <string>
+
 namespace network {
 
 typedef enum ClientType{
@@ -23,7 +24,7 @@ class Client {
         std::string _buffer;
     protected:
     public:
-        Client(int fd, client_type_t type);
+        Client(int fd, client_type_t type) : _fd(fd), _type(type) {};
         virtual ~Client() = default;
         int getFd() const;
         client_type_t getType() const;
