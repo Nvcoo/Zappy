@@ -18,7 +18,7 @@
 
 namespace network {
 
-Server::Server(const Args &args) : _args(args), _listenFd(-1)
+Server::Server(const Args &args) : _listenFd(-1), _args(args)
 {
     _listenFd = socket(AF_INET, SOCK_STREAM, 0);
     if (_listenFd < 0)
