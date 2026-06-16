@@ -9,9 +9,9 @@ CXX = clang++
 
 CXXFLAGS = -Wall -Wextra -g -I./include
 
-SRC =	src/main.cpp \
-		src/Server.cpp \
-		src/Args.cpp \
+SRC =	main.cpp \
+		src/network/Server.cpp \
+		src/network/Args.cpp \
 
 OBJ = $(SRC:.cpp=.o)
 
