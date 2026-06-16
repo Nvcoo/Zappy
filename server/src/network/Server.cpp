@@ -6,6 +6,8 @@
 */
 
 #include "../../include/network/Server.hpp"
+#include <cstddef>
+#include <string>
 #include <sys/poll.h>
 #include <unistd.h>
 #include <iostream>
@@ -58,11 +60,64 @@ void Server::run()
             throw std::runtime_error("poll failed");
         if (_pollFds[0].revents & POLLIN)
             acceptNewClient();
-        for (int i = 1; i < _pollFds.size(); i++) {
+        for (size_t i = 1; i < _pollFds.size(); i++) {
             if (_pollFds[i].revents & POLLIN)
                 handleClientData(i);
         }
     }
+}
+
+void Server::acceptNewClient()
+{
+    struct sockaddr_in clientAddr;
+    socklen_t clientAddrLen = sizeof(clientAddr);
+    int clientFd = accept(_listenFd, (struct sockaddr *)&clientAddr, &clientAddrLen);
+
+    if (clientFd < 0) {
+        std::cerr << "the accept failed" << std::endl;
+        return;
+    }
+
+    struct pollfd pfd;
+    pfd.fd = clientFd;
+    pfd.events = POLLIN;
+    pfd.revents = 0;
+    _pollFds.push_back(pfd);
+    _clients.push_back(std::make_unique<Client>(clientFd, PLAYER));
+    _clients.back()->sendMessage("WELCOME\n");
+    std::cout << "New client connected on fd " << clientFd << std::endl;
+}
+
+void Server::handleClientData(size_t index)
+{
+    Client &client = *_clients[index - 1];
+    char buffer[1024];
+    size_t bytesRead = read(client.getFd(), buffer, sizeof(buffer) - 1);
+
+    if (bytesRead <= 0) {
+        removeClient(index);
+        return;
+    }
+    buffer[bytesRead] = '\0';
+    client.appendToBuffer(std::string(buffer, bytesRead));
+    while (client.hasLine()) {
+        std::string line = client.popLine();
+        processLine(client, line);
+    }
+}
+
+void Server::removeClient(size_t index)
+{
+    std::cout << "Client on fd " << _pollFds[index].fd << " has been disconected" << std::endl;
+    close(_pollFds[index].fd);
+    _pollFds.erase(_pollFds.begin() + index);
+    _clients.erase(_clients.begin() + (index - 1));
+}
+
+void Server::processLine(Client &client, const std::string &line)
+{
+    std::cout << "Received from fd " << client.getFd() << ": " << line << std::endl;
+    client.sendMessage("ok\n");
 }
 
 }
