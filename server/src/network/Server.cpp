@@ -54,15 +54,17 @@ Server::~Server()
 void Server::run()
 {
     while (true) {
-        int ready = poll(_pollFds.data(), _pollFds.size(), -1);
+        int ready = poll(_pollFds.data(), _pollFds.size(), 100);
 
         if (ready < 0)
             throw std::runtime_error("poll failed");
-        if (_pollFds[0].revents & POLLIN)
-            acceptNewClient();
-        for (size_t i = 1; i < _pollFds.size(); i++) {
-            if (_pollFds[i].revents & POLLIN)
-                handleClientData(i);
+        if (ready > 0) {
+            if (_pollFds[0].revents & POLLIN)
+                acceptNewClient();
+            for (size_t i = 1; i < _pollFds.size(); i++) {
+                if (_pollFds[i].revents & POLLIN)
+                    handleClientData(i);
+            }
         }
     }
 }
@@ -92,7 +94,7 @@ void Server::handleClientData(size_t index)
 {
     Client &client = *_clients[index - 1];
     char buffer[1024];
-    size_t bytesRead = read(client.getFd(), buffer, sizeof(buffer) - 1);
+    ssize_t bytesRead = read(client.getFd(), buffer, sizeof(buffer) - 1);
 
     if (bytesRead <= 0) {
         removeClient(index);
