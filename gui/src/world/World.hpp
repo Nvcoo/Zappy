@@ -14,6 +14,21 @@ struct Player {
     int orientation = 1;
     int level = 1;
     std::string team;
+    int inventory[7] = {0,0,0,0,0,0,0};
+};
+
+struct Egg {
+    int id = -1;
+    int owner = -1;
+    int x = 0;
+    int y = 0;
+};
+
+struct Incant {
+    int x = 0;
+    int y = 0;
+    int level = 1;
+    std::vector<int> players;
 };
 
 class World {
@@ -44,7 +59,7 @@ public:
     void eggHatched(int egg);
     void eggDied(int egg);
 
-    // time n server messages
+    // time / server messages
     void setTimeUnit(int t);
     void endGame(const std::string &team);
     void serverMessage(const std::string &msg);
@@ -54,10 +69,17 @@ public:
     // unknown
     void unknownLine(const std::string &line);
 
-    // data
+    // public data
     int width = 0;
     int height = 0;
+    int timeUnit = 0;
+    bool gameEnded = false;
+    std::string winningTeam;
+
     std::vector<std::vector<Tile>> map;
     std::unordered_map<int, Player> players;
     std::vector<std::string> teams;
+
+    std::unordered_map<int, Egg> eggs;
+    std::vector<Incant> incantations;
 };
