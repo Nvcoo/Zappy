@@ -7,10 +7,12 @@ static bool inBounds(const World &w, int x, int y) {
     return (y >= 0 && y < (int)w.map.size() && x >= 0 && x < (int)w.map[y].size());
 }
 
+// map & teams
 void World::setMapSize(int w, int h) {
     width = w;
     height = h;
-    map.assign(h, std::vector<Tile>(w)); // map[y][x]
+    // map is stored as map[y][x]
+    map.assign(h, std::vector<Tile>(w));
     std::cout << "[WORLD] Map size set to " << width << "x" << height << "\n";
 }
 
@@ -28,11 +30,13 @@ void World::updateTile(int x, int y, int q[7]) {
     std::cout << "]\n";
 }
 
+
 void World::addTeam(const std::string &name) {
     teams.push_back(name);
     std::cout << "[WORLD] Team added: " << name << "\n";
 }
 
+//player & actions
 void World::addPlayer(int id, int x, int y, int o, int level, const std::string &team) {
     Player p;
     p.id = id;
@@ -41,7 +45,6 @@ void World::addPlayer(int id, int x, int y, int o, int level, const std::string 
     p.orientation = o;
     p.level = level;
     p.team = team;
-    // initialize inventory
     for (int i = 0; i < 7; ++i) p.inventory[i] = 0;
     players[id] = p;
     std::cout << "[WORLD] Player added: #" << id
@@ -54,6 +57,11 @@ void World::movePlayer(int id, int x, int y, int o) {
     if (it == players.end()) {
         std::cout << "[WORLD] movePlayer: unknown player #" << id << "\n";
         return;
+    }
+    // wrap positions if map is set
+    if (width > 0 && height > 0) {
+        x = (x % width + width) % width;
+        y = (y % height + height) % height;
     }
     it->second.x = x;
     it->second.y = y;
@@ -74,13 +82,15 @@ void World::setPlayerLevel(int id, int level) {
 void World::setPlayerInventory(int id, int x, int y, int q[7]) {
     auto it = players.find(id);
     if (it == players.end()) {
-        // still update tile if in bounds
         if (inBounds(*this, x, y)) {
             for (int i = 0; i < 7; ++i) map[y][x].q[i] = q[i];
+            std::cout << "[WORLD] setPlayerInventory: unknown player #" << id << " (tile updated)\n";
+        } else {
+            std::cout << "[WORLD] setPlayerInventory: unknown player #" << id << " and tile OOB\n";
         }
-        std::cout << "[WORLD] setPlayerInventory: unknown player #" << id << " (tile updated)\n";
         return;
     }
+
     for (int i = 0; i < 7; ++i) it->second.inventory[i] = q[i];
     it->second.x = x;
     it->second.y = y;
@@ -110,7 +120,6 @@ void World::startIncantation(int x, int y, int level, const std::vector<int> &pl
 }
 
 void World::endIncantation(int x, int y, int result) {
-    // remove incantation at tile
     incantations.erase(std::remove_if(incantations.begin(), incantations.end(),
         [&](const Incant &ic){ return ic.x == x && ic.y == y; }), incantations.end());
     std::cout << "[WORLD] Incantation ended at (" << x << "," << y << ") result=" << result << "\n";
@@ -120,13 +129,41 @@ void World::playerLaidEgg(int id) {
     std::cout << "[WORLD] Player #" << id << " laid an egg (pfk)\n";
 }
 
-//resources
 void World::playerDropped(int id, int resource) {
-    std::cout << "[WORLD] Player #" << id << " dropped resource " << resource << "\n";
+    if (resource < 0 || resource >= 7) {
+        std::cout << "[WORLD] playerDropped: invalid resource " << resource << "\n";
+        return;
+    }
+    auto it = players.find(id);
+    if (it == players.end()) {
+        std::cout << "[WORLD] playerDropped: unknown player #" << id << "\n";
+        return;
+    }
+    if (it->second.inventory[resource] > 0) it->second.inventory[resource]--;
+    int x = it->second.x, y = it->second.y;
+    if (inBounds(*this, x, y)) map[y][x].q[resource]++;
+    std::cout << "[WORLD] Player #" << id << " dropped resource " << resource << " at (" << x << "," << y << ")\n";
 }
 
 void World::playerCollected(int id, int resource) {
-    std::cout << "[WORLD] Player #" << id << " collected resource " << resource << "\n";
+    if (resource < 0 || resource >= 7) {
+        std::cout << "[WORLD] playerCollected: invalid resource " << resource << "\n";
+        return;
+    }
+    auto it = players.find(id);
+    if (it == players.end()) {
+        std::cout << "[WORLD] playerCollected: unknown player #" << id << "\n";
+        return;
+    }
+    int x = it->second.x, y = it->second.y;
+    if (inBounds(*this, x, y) && map[y][x].q[resource] > 0) {
+        map[y][x].q[resource]--;
+        it->second.inventory[resource]++;
+        std::cout << "[WORLD] Player #" << id << " collected resource " << resource << " from (" << x << "," << y << ")\n";
+    } else {
+        it->second.inventory[resource]++;
+        std::cout << "[WORLD] Player #" << id << " collected resource " << resource << " (tile had none or OOB)\n";
+    }
 }
 
 void World::playerDied(int id) {
@@ -170,6 +207,7 @@ void World::eggDied(int egg) {
     }
 }
 
+
 void World::setTimeUnit(int t) {
     timeUnit = t;
     std::cout << "[WORLD] Time unit set to " << t << "\n";
@@ -195,4 +233,15 @@ void World::badParameter() {
 
 void World::unknownLine(const std::string &line) {
     std::cout << "[WORLD] Unknown line: " << line << "\n";
+}
+
+// help for rendering
+std::vector<int> World::getPlayersInTile(int x, int y) const {
+    std::vector<int> out;
+    if (!inBounds(*this, x, y)) return out;
+    for (const auto &kv : players) {
+        const Player &p = kv.second;
+        if (p.x == x && p.y == y) out.push_back(p.id);
+    }
+    return out;
 }

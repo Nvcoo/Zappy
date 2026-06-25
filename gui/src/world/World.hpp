@@ -69,6 +69,9 @@ public:
     // unknown
     void unknownLine(const std::string &line);
 
+    // for renderer
+    std::vector<int> getPlayersInTile(int x, int y) const;
+
     // public data
     int width = 0;
     int height = 0;
