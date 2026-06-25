@@ -61,9 +61,9 @@ void Server::run()
         if (ready > 0) {
             if (_pollFds[0].revents & POLLIN)
                 acceptNewClient();
-            for (size_t i = 1; i < _pollFds.size(); i++) {
+            for (size_t i = _pollFds.size() - 1; i >= 1; i--) {
                 if (_pollFds[i].revents & POLLIN)
-                    handleClientData(i);
+                    handleClientData(i); //here
             }
         }
     }
