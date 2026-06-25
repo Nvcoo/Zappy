@@ -51,6 +51,9 @@ Server::~Server()
         close(pfd.fd);
 }
 
+//we iterate the other way around cuz
+//if 2 or more clients disconnect during the same poll cycle
+//we will get a crash cuz the second removal operates in a shifted vector.
 void Server::run()
 {
     while (true) {
