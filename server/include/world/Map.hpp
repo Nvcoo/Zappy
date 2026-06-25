@@ -13,6 +13,8 @@
 
 namespace world {
 
+const float densities[RESOURCE_COUNT] = {0.5f, 0.3f, 0.15f, 0.1f, 0.1f, 0.08f, 0.05f};
+
 class Map {
     private:
         int _width;
