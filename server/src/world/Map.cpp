@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2026
 ** Zappy
 ** File description:
-** Args
+** Map
 */
 
 #include "../../include/world/Map.hpp"
