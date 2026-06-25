@@ -14,7 +14,9 @@ SRC =	main.cpp \
 		src/network/Args.cpp \
 		src/network/Client.cpp \
 		src/world/Tile.cpp \
-		src/world/Map.cpp
+		src/world/Map.cpp \
+		src/world/Team.cpp \
+		src/world/Elevation.cpp
 
 OBJ = $(SRC:.cpp=.o)
 
