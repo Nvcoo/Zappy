@@ -12,7 +12,9 @@ CXXFLAGS = -Wall -Wextra -g -I./include
 SRC =	main.cpp \
 		src/network/Server.cpp \
 		src/network/Args.cpp \
-		src/network/Client.cpp
+		src/network/Client.cpp \
+		src/world/Tile.cpp \
+		src/world/Map.cpp
 
 OBJ = $(SRC:.cpp=.o)
 
