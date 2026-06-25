@@ -10,6 +10,7 @@
 
 #include <string>
 #include <vector>
+
 namespace world {
 
 struct Egg {
@@ -24,10 +25,10 @@ class Team {
         int _maxClients;
         int _connectedClients;
         std::vector<Egg> _eggs;
-        static int _nextEggId;
+        static int _nextEggId; //it needs to be static to prevent 2 teams's eggs having the same ID
     protected:
     public:
-        Team(const std::string &name, int maxClients);
+        Team(const std::string &name, int maxClients) : _name(name), _maxClients(maxClients), _connectedClients(0) {};
         const std::string &getName() const;
         int getMaxClients() const;
         int getConnectedClients() const;
