@@ -17,6 +17,8 @@ void Player::addToInv(world::Resource r, int amount)
 void Player::removeFromInv(world::Resource r, int amount)
 {
     _inventory[r] -= amount;
+    if (_inventory[r] < 0)
+        _inventory[r] = 0;
 }
 
 void Player::decrementLife(int amount)
