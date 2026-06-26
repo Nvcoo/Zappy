@@ -8,6 +8,7 @@
 #ifndef PLAYER_HPP_
     #define PLAYER_HPP_
 
+#include <cstring>
 #include <queue>
 #include <string>
 #include "../network/Client.hpp"
@@ -41,7 +42,11 @@ class Player : public network::Client {
         bool _busy;
     protected:
     public:
-        Player(int fd, const std::string &teamName, int x, int y);
+        Player(int fd, const std::string &teamName, int x, int y) : network::Client(fd, network::PLAYER), _x(x), _y(y), _orientation(NORTH), _level(1), _lifeTimer(1260), _teamName(teamName), _busy(false)
+        {
+            std::memset(_inventory, 0, sizeof(_inventory));
+            _inventory[world::FOOD] = 10;
+        };
 
         int getX() const;
         int getY() const;
