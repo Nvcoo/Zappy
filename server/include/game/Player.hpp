@@ -48,28 +48,68 @@ class Player : public network::Client {
             _inventory[world::FOOD] = 10;
         };
 
-        int getX() const;
-        int getY() const;
-        orientation_t getOrientation() const;
-        int getLevel() const;
-        int getInventory(world::Resource r) const;
-        int getLifeTimer() const;
-        const std::string &getTeamName() const;
-        bool isBusy() const;
+        int getX() const
+        {
+            return _x;
+        };
+        int getY() const
+        {
+            return _y;
+        };
+        orientation_t getOrientation() const
+        {
+            return _orientation;
+        };
+        int getLevel() const
+        {
+            return _level;
+        };
+        int getInventory(world::Resource r) const
+        {
+            return _inventory[r];
+        };
+        int getLifeTimer() const
+        {
+            return _lifeTimer;
+        };
+        const std::string &getTeamName() const
+        {
+            return _teamName;
+        };
+        bool isBusy() const
+        {
+            return _busy;
+        };
 
-        void setPos(int x, int y);
-        void setOrientation(orientation_t o);
-        void setLevel(int level);
+        void setPos(int x, int y)
+        {
+            _x = x;
+            _y = y;
+        };
+        void setOrientation(orientation_t o)
+        {
+            _orientation = o;
+        };
+        void setLevel(int level)
+        {
+            _level = level;
+        };
+        void setBusy(bool busy)
+        {
+            _busy = busy;
+        };
+        bool isDead() const
+        {
+            return _lifeTimer <= 0;
+        };
         void addToInv(world::Resource r, int amount);
         void removeFromInv(world::Resource r, int amount);
         void decrementLife(int amount);
-        bool isDead() const;
 
         bool pushCommand(const Command &cmd);
         bool hasCommand() const;
         Command &frontCommand();
         void popCommand();
-        void setBusy(bool busy);
 };
 
 }
