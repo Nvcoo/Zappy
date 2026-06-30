@@ -6,7 +6,6 @@
 */
 
 #include "../../include/game/Clock.hpp"
-#include <chrono>
 
 namespace game {
 

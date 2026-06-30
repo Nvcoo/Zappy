@@ -7,8 +7,6 @@
 
 #include "../../include/network/Server.hpp"
 #include "../../include/game/Player.hpp"
-#include <cstddef>
-#include <memory>
 #include <string>
 #include <sys/poll.h>
 #include <unistd.h>
