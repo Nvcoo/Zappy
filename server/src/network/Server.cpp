@@ -171,7 +171,7 @@ void Server::processLine(Client &client, const std::string &line)
         return;
     }
     std::cout << "Received from fd " << client.getFd() << ": " << line << std::endl;
-    client.sendMessage("ok\n");
+    client.sendMessage("ok\n"); //placeholder for now
 }
 
 world::Team *Server::findTeam(const std::string &name)
