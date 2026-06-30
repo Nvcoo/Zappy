@@ -182,4 +182,26 @@ world::Team *Server::findTeam(const std::string &name)
     return nullptr;
 }
 
+void Server::updateGame()
+{
+    if (_clock.respawn()) {
+        _map.spawnResources();
+        _clock.resetSpawn();
+        std::cout << "Resources respawned" << std::endl;
+    }
+    for (int i = 0; i < _clients.size(); i++) {
+        game::Player *player = dynamic_cast<game::Player *>(_clients[i].get());
+        if (player == nullptr) {
+            continue;
+        }
+        player->decrementLife(1);
+        if (player->isDead()) {
+            std::cout << "Player on fd " << player->getFd() << " has died" << std::endl;
+            player->sendMessage("dead\n");
+            removeClient(i + 1);
+            i--;
+        }
+    }
+}
+
 }
