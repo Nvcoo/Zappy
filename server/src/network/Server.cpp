@@ -75,6 +75,7 @@ void Server::run()
                     handleClientData(i); //here
             }
         }
+        updateGame();
     }
 }
 
@@ -194,7 +195,7 @@ void Server::updateGame()
     if (elapsedTicks <= 0)
         return;
 
-    for (int i = 0; i < _clients.size(); i++) {
+    for (size_t i = 0; i < _clients.size(); i++) {
         game::Player *player = dynamic_cast<game::Player *>(_clients[i].get());
         if (player == nullptr)
             continue;
