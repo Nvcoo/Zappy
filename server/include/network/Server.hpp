@@ -13,29 +13,12 @@
 #include "../world/Map.hpp"
 #include "../world/Team.hpp"
 #include "../game/Clock.hpp"
-#include "../game/Player.hpp"
 #include <cstddef>
 #include <memory>
 #include <vector>
 #include <poll.h>
 
 namespace network {
-
-enum CommandType {
-    FORWARD,
-    LEFT,
-    RIGHT,
-    LOOK,
-    INVENTORY,
-    BROADCAST,
-    CONNECT_NBR,
-    FORK,
-    EJECT,
-    TAKE,
-    SET,
-    INCANTATION,
-    UNKNOWN
-};
 
 class Server {
     private:
@@ -55,8 +38,6 @@ class Server {
         game::Clock _clock;
         world::Team *findTeam(const std::string &name);
         void updateGame();
-        void processPlayerCommands(game::Player &player);
-        std::string executeCommand(game::Player &player, const game::Command &cmd);
     protected:
     public:
         Server(const Args &args);

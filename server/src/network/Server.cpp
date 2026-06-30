@@ -7,6 +7,7 @@
 
 #include "../../include/network/Server.hpp"
 #include "../../include/game/Player.hpp"
+#include "../../include/command/CommandHandler.hpp"
 #include <cmath>
 #include <cstddef>
 #include <string>
@@ -162,22 +163,6 @@ void Server::handleTeamName(Client &client, const std::string &teamName)
     _clients[index]->sendMessage(response);
 }
 
-game::Command parseCommand(const std::string &line)
-{
-    game::Command cmd;
-    size_t spacePos = line.find(' ');
-
-    if (spacePos == std::string::npos) {
-        cmd.name = line;
-        cmd.arg = "";
-    } else {
-        cmd.name = line.substr(0, spacePos);
-        cmd.arg = line.substr(spacePos + 1);
-    }
-    cmd.executeAt = 0;
-    return cmd;
-}
-
 void Server::processLine(Client &client, const std::string &line)
 {
     game::Player *player = dynamic_cast<game::Player *>(&client);
@@ -187,169 +172,10 @@ void Server::processLine(Client &client, const std::string &line)
         return;
     }
 
-    game::Command cmd = parseCommand(line);
+    game::Command cmd = command::parseCommand(line);
     bool queued = player->pushCommand(cmd);
     if (!queued)
         return;
-}
-
-CommandType nameToType(const std::string &name)
-{
-    if (name == "Forward")
-        return FORWARD;
-    if (name == "Left")
-        return LEFT;
-    if (name == "Right")
-        return RIGHT;
-    if (name == "Look")
-        return LOOK;
-    if (name == "Inventory")
-        return INVENTORY;
-    if (name == "Broadcast")
-        return BROADCAST;
-    if (name == "Connect_nbr")
-        return CONNECT_NBR;
-    if (name == "Fork")
-        return FORK;
-    if (name == "Eject")
-        return EJECT;
-    if (name == "Take")
-        return TAKE;
-    if (name == "Set")
-        return SET;
-    if (name == "Incantation")
-        return INCANTATION;
-    return UNKNOWN;
-}
-
-int getCommandCost(CommandType type)
-{
-    switch (type) {
-        case FORWARD:
-            return 7;
-        case LEFT:
-            return 7;
-        case RIGHT:
-            return 7;
-        case LOOK:
-            return 7;
-        case INVENTORY:
-            return 1;
-        case BROADCAST:
-            return 7;
-        case CONNECT_NBR:
-            return 0;
-        case FORK:
-            return 42;
-        case EJECT:
-            return 7;
-        case TAKE:
-            return 7;
-        case SET:
-            return 7;
-        case INCANTATION:
-            return 300;
-        default:
-            return 7;
-    }
-}
-
-void Server::processPlayerCommands(game::Player &player)
-{
-    if (!player.hasCommand())
-        return;
-
-    game::Command &cmd = player.frontCommand();
-
-    if (cmd.executeAt == 0) {
-        int costTicks = getCommandCost(nameToType(cmd.name));
-        cmd.executeAt = _clock.now() + _clock.milliseconds(costTicks);
-        return;
-    }
-    if (_clock.now() < cmd.executeAt)
-        return;
-    std::string response = executeCommand(player, cmd);
-    player.sendMessage(response);
-    player.popCommand();
-}
-
-void rotateLeft(game::Player &player)
-{
-    switch (player.getOrientation()) {
-        case game::NORTH:
-            player.setOrientation(game::WEST);
-            break;
-        case game::WEST:
-            player.setOrientation(game::SOUTH);
-            break;
-        case game::SOUTH:
-            player.setOrientation(game::EAST);
-            break;
-        case game::EAST:
-            player.setOrientation(game::NORTH);
-            break;
-    }
-}
-
-void rotateRight(game::Player &player)
-{
-    switch (player.getOrientation()) {
-        case game::NORTH:
-            player.setOrientation(game::EAST);
-            break;
-        case game::WEST:
-            player.setOrientation(game::NORTH);
-            break;
-        case game::SOUTH:
-            player.setOrientation(game::WEST);
-            break;
-        case game::EAST:
-            player.setOrientation(game::SOUTH);
-            break;
-    }
-}
-
-void moveForward(game::Player &player, world::Map &map)
-{
-    int x = player.getX();
-    int y = player.getY();
-
-    switch (player.getOrientation()) {
-        case game::NORTH:
-            y -= 1;
-            break;
-        case game::SOUTH:
-            y += 1;
-            break;
-        case game::EAST:
-            x += 1;
-            break;
-        case game::WEST:
-            x -= 1;
-            break;
-    }
-    x = ((x % map.getWidth()) + map.getWidth()) % map.getWidth();
-    y = ((y % map.getHeight()) + map.getHeight()) % map.getHeight();
-    player.setPos(x, y);
-}
-
-std::string Server::executeCommand(game::Player &player, const game::Command &cmd)
-{
-    switch (nameToType(cmd.name)) {
-        case FORWARD:
-            moveForward(player, _map);
-            return "ok\n";
-        case LEFT:
-            rotateLeft(player);
-            return "ok\n";
-        case RIGHT:
-            rotateRight(player);
-            return "ok\n";
-        case UNKNOWN:
-            return "ko\n";
-        default:
-            return "ko\n";
-    }
 }
 
 world::Team *Server::findTeam(const std::string &name)
@@ -385,7 +211,7 @@ void Server::updateGame()
             i--;
             continue;
         }
-        processPlayerCommands(*player);
+        command::processPlayerCommands(*player, _clock, _map);
     }
 }
 
