@@ -16,7 +16,9 @@ SRC =	main.cpp \
 		src/world/Tile.cpp \
 		src/world/Map.cpp \
 		src/world/Team.cpp \
-		src/world/Elevation.cpp
+		src/world/Elevation.cpp \
+		src/game/Player.cpp \
+		src/game/Clock.cpp
 
 OBJ = $(SRC:.cpp=.o)
 
