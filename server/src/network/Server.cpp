@@ -189,12 +189,16 @@ void Server::updateGame()
         _clock.resetSpawn();
         std::cout << "Resources respawned" << std::endl;
     }
+
+    int elapsedTicks = _clock.elapsedTicks();
+    if (elapsedTicks <= 0)
+        return;
+
     for (int i = 0; i < _clients.size(); i++) {
         game::Player *player = dynamic_cast<game::Player *>(_clients[i].get());
-        if (player == nullptr) {
+        if (player == nullptr)
             continue;
-        }
-        player->decrementLife(1);
+        player->decrementLife(elapsedTicks);
         if (player->isDead()) {
             std::cout << "Player on fd " << player->getFd() << " has died" << std::endl;
             player->sendMessage("dead\n");
