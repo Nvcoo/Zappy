@@ -72,6 +72,10 @@ std::string executeCommand(game::Player &player, const game::Command &cmd, world
             return "ok\n";
         case INVENTORY:
             return executeInventory(player);
+        case TAKE:
+            return executeTake(player, map, cmd.arg);
+        case SET:
+            return executeSet(player, map, cmd.arg);
         case UNKNOWN:
             return "ko\n";
         default:
