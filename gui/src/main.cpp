@@ -5,6 +5,12 @@
 #include <unistd.h>
 
 #include "network/TcpClient.hpp"
+#include "protocol/Parser.hpp"
+#include "world/World.hpp"
+#include "renderer/Renderer.hpp"
+
+Parser parser;
+World world;
 
 static void print_usage(const char *prog) {
     std::cout << "USAGE: " << prog << " -p port -h machine\n"
@@ -91,16 +97,22 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    // minimal loop to show messages
-    while (true) {
+    // init renderer
+    Renderer renderer;
+    renderer.init();
+
+    // main loop
+    while (!WindowShouldClose()) {
+        // network
         auto messages = client.pollMessages();
-        if (!client.connectToServer()) {
-            std::cerr << "Connection lost\n";
-            break;
-        }
         for (auto &m : messages) {
-            std::cout << "SERVER: " << m << std::endl;
+            parser.parse(m, world);
         }
+
+        // update + draw
+        renderer.update(world);
+        renderer.draw(world);
+
         usleep(10 * 1000); // 10 ms
     }
 
