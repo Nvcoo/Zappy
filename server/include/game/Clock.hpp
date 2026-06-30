@@ -16,11 +16,13 @@ class Clock {
     private:
         int _freq;
         std::chrono::steady_clock::time_point _lastSpawn; //apparently this clock is the best one for measuring elapsed time.
+        std::chrono::steady_clock::time_point _lastTick;
     protected:
     public:
         Clock(int freq) : _freq(freq)
         {
             _lastSpawn = std::chrono::steady_clock::now();
+            _lastTick = std::chrono::steady_clock::now();
         }
         int milliseconds(int ticks) const
         {
@@ -32,6 +34,7 @@ class Clock {
         }
         bool respawn();
         int now() const;
+        int elapsedTicks();
 };
 
 }
