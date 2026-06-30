@@ -125,6 +125,15 @@ void Server::removeClient(size_t index)
     _clients.erase(_clients.begin() + (index - 1));
 }
 
+int Server::findClientIndex(int fd)
+{
+    for (size_t i = 0; i < _clients.size(); i++) {
+        if (_clients[i]->getFd() == fd)
+            return static_cast<int>(i);
+    }
+    return -1;
+}
+
 void Server::handleTeamName(Client &client, const std::string &teamName)
 {
     world::Team *team = findTeam(teamName);
