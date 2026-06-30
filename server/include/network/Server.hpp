@@ -32,7 +32,7 @@ class Server {
         void processLine(Client &client, const std::string &line);
 
         world::Map _map;
-        std::vector<world::Team> _team;
+        std::vector<world::Team> _teams;
         game::Clock _clock;
         world::Team *findTeam(const std::string &name);
         void updateGame();
