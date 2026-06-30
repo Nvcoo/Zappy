@@ -6,7 +6,9 @@
 */
 
 #include "../../include/network/Server.hpp"
+#include "../../include/game/Player.hpp"
 #include <cstddef>
+#include <memory>
 #include <string>
 #include <sys/poll.h>
 #include <unistd.h>
@@ -15,6 +17,8 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <cstring>
+#include <utility>
+#include <cstdlib>
 
 namespace network {
 
@@ -121,8 +125,41 @@ void Server::removeClient(size_t index)
     _clients.erase(_clients.begin() + (index - 1));
 }
 
+void Server::handleTeamName(Client &client, const std::string &teamName)
+{
+    world::Team *team = findTeam(teamName);
+    if (team == nullptr || team->getAvailableSlots() <= 0) {
+        client.sendMessage("ko\n");
+        return;
+    }
+
+    int spawnX = std::rand() % _map.getWidth();
+    int spawnY = std::rand() % _map.getHeight();
+    if (team->hasEgg()) {
+        world::Egg egg = team->popEgg();
+        spawnX = egg.x;
+        spawnY = egg.y;
+    }
+
+    auto new_player = std::make_unique<game::Player>(client.getFd(), teamName, spawnX, spawnY);
+    team->addClient();
+
+    int index = findClientIndex(client.getFd());
+    _clients[index] = std::move(new_player);
+
+    std::string response = std::to_string(team->getAvailableSlots()) + "\n";
+    response += std::to_string(_map.getWidth()) + " " + std::to_string(_map.getHeight()) + "\n";
+    _clients[index]->sendMessage(response);
+}
+
 void Server::processLine(Client &client, const std::string &line)
 {
+    game::Player *player = dynamic_cast<game::Player *>(&client);
+
+    if (player == nullptr) {
+        handleTeamName(client, line);
+        return;
+    }
     std::cout << "Received from fd " << client.getFd() << ": " << line << std::endl;
     client.sendMessage("ok\n");
 }

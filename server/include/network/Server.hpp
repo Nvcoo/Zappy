@@ -30,6 +30,8 @@ class Server {
         void handleClientData(size_t index);
         void removeClient(size_t index);
         void processLine(Client &client, const std::string &line);
+        void handleTeamName(Client &client, const std::string &teamName);
+        int findClientIndex(int fd);
 
         world::Map _map;
         std::vector<world::Team> _teams;
