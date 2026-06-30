@@ -18,7 +18,10 @@ SRC =	main.cpp \
 		src/world/Team.cpp \
 		src/world/Elevation.cpp \
 		src/game/Player.cpp \
-		src/game/Clock.cpp
+		src/game/Clock.cpp \
+		src/command/CommandType.cpp \
+		src/command/Actions.cpp \
+		src/command/CommandHandler.cpp
 
 OBJ = $(SRC:.cpp=.o)
 
