@@ -18,8 +18,10 @@
 
 namespace network {
 
-Server::Server(const Args &args) : _listenFd(-1), _args(args)
+Server::Server(const Args &args) : _listenFd(-1), _args(args), _map(args.width, args.height), _clock(args.freq)
 {
+    for (const auto &name : args.teamNames)
+        _teams.push_back(world::Team(name, args.clientsNb));
     _listenFd = socket(AF_INET, SOCK_STREAM, 0);
     if (_listenFd < 0)
         throw std::runtime_error("Failed to create socket");
@@ -123,6 +125,15 @@ void Server::processLine(Client &client, const std::string &line)
 {
     std::cout << "Received from fd " << client.getFd() << ": " << line << std::endl;
     client.sendMessage("ok\n");
+}
+
+world::Team *Server::findTeam(const std::string &name)
+{
+    for (auto &team : _teams) {
+        if (team.getName() == name)
+            return &team;
+    }
+    return nullptr;
 }
 
 }
