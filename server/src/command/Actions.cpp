@@ -6,6 +6,7 @@
 */
 
 #include "../../include/command/Actions.hpp"
+#include <string>
 
 namespace command {
 
@@ -67,6 +68,20 @@ void moveForward(game::Player &player, world::Map &map)
     x = ((x % map.getWidth()) + map.getWidth()) % map.getWidth();
     y = ((y % map.getHeight()) + map.getHeight()) % map.getHeight();
     player.setPos(x, y);
+}
+
+std::string executeInventory(game::Player &player)
+{
+    std::string response = "[";
+    response += "food " + std::to_string(player.getInventory(world::FOOD));
+    response += ", linemate " + std::to_string(player.getInventory(world::LINEMATE));
+    response += ", deraumere " + std::to_string(player.getInventory(world::DERAUMERE));
+    response += ", sibur " + std::to_string(player.getInventory(world::SIBUR));
+    response += ", mendiane " + std::to_string(player.getInventory(world::MENDIANE));
+    response += ", phiras " + std::to_string(player.getInventory(world::PHIRAS));
+    response += ", thystame " + std::to_string(player.getInventory(world::THYSTAME));
+    response += "]\n";
+    return response;
 }
 
 }

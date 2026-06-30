@@ -16,6 +16,7 @@ namespace command {
 void moveForward(game::Player &player, world::Map &map);
 void rotateLeft(game::Player &player);
 void rotateRight(game::Player &player);
+std::string executeInventory(game::Player &player);
 
 }
 
