@@ -84,4 +84,52 @@ std::string executeInventory(game::Player &player)
     return response;
 }
 
+std::string executeTake(game::Player &player, world::Map &map, const std::string &arg)
+{
+    world::Resource r = nameToResource(arg);
+
+    if (r == world::RESOURCE_COUNT)
+        return "ko\n";
+
+    world::Tile &tile = map.getTile(player.getX(), player.getY());
+    if (tile.getResource(r) <= 0)
+        return "ko\n";
+    tile.removeResource(r, 1);
+    player.addToInv(r, 1);
+    return "ok\n";
+}
+
+std::string executeSet(game::Player &player, world::Map &map, const std::string &arg)
+{
+    world::Resource r = nameToResource(arg);
+
+    if (r == world::RESOURCE_COUNT)
+        return "ko\n";
+    if (player.getInventory(r) <= 0)
+        return "ko\n";
+    player.removeFromInv(r, r);
+    world::Tile &tile = map.getTile(player.getX(), player.getY());
+    tile.addResource(r, r);
+    return "ok\n";
+}
+
+world::Resource nameToResource(const std::string &name)
+{
+    if (name == "food")
+        return world::FOOD;
+    if (name == "linemate")
+        return world::LINEMATE;
+    if (name == "deraumere")
+        return world::DERAUMERE;
+    if (name == "sibur")
+        return world::SIBUR;
+    if (name == "mendiane")
+        return world::MENDIANE;
+    if (name == "phiras")
+        return world::PHIRAS;
+    if (name == "thystame")
+        return world::THYSTAME;
+    return world::RESOURCE_COUNT; //we'll return this if it's invalid
+}
+
 }
