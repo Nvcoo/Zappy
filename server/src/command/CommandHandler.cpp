@@ -70,6 +70,8 @@ std::string executeCommand(game::Player &player, const game::Command &cmd, world
         case RIGHT:
             rotateRight(player);
             return "ok\n";
+        case INVENTORY:
+            return executeInventory(player);
         case UNKNOWN:
             return "ko\n";
         default:
