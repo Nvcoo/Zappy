@@ -10,6 +10,7 @@
 #include "../../include/command/CommandHandler.hpp"
 #include <cmath>
 #include <cstddef>
+#include <memory>
 #include <string>
 #include <sys/poll.h>
 #include <unistd.h>
@@ -94,7 +95,7 @@ void Server::acceptNewClient()
     pfd.events = POLLIN;
     pfd.revents = 0;
     _pollFds.push_back(pfd);
-    _clients.push_back(std::make_unique<Client>(clientFd, PLAYER));
+    _clients.push_back(std::make_shared<Client>(clientFd, PLAYER));
     _clients.back()->sendMessage("WELCOME\n");
     std::cout << "New client connected on fd " << clientFd << std::endl;
 }
@@ -113,7 +114,7 @@ void Server::handleClientData(size_t index)
     client.appendToBuffer(std::string(buffer, bytesRead));
     while (client.hasLine()) {
         std::string line = client.popLine();
-        processLine(client, line);
+        processLine(_clients[index - 1], line);
     }
 }
 
@@ -150,7 +151,7 @@ void Server::handleTeamName(Client &client, const std::string &teamName)
         spawnY = egg.y;
     }
 
-    auto new_player = std::make_unique<Player>(client.getFd(), teamName, spawnX, spawnY);
+    auto new_player = std::make_shared<Player>(client.getFd(), teamName, spawnX, spawnY);
     team->addClient();
 
     int index = findClientIndex(client.getFd());
@@ -161,12 +162,13 @@ void Server::handleTeamName(Client &client, const std::string &teamName)
     _clients[index]->sendMessage(response);
 }
 
-void Server::processLine(Client &client, const std::string &line)
+void Server::processLine(std::shared_ptr<Client> client, const std::string &line)
 {
-    Player *player = dynamic_cast<Player *>(&client);
+    //Player *player = dynamic_cast<Player *>(&client);
+    auto player = std::dynamic_pointer_cast<Player>(client);
 
     if (player == nullptr) {
-        handleTeamName(client, line);
+        handleTeamName(*client, line);
         return;
     }
 
@@ -198,7 +200,7 @@ void Server::updateGame()
         return;
 
     for (size_t i = 0; i < _clients.size(); i++) {
-        Player *player = dynamic_cast<Player *>(_clients[i].get());
+        auto player = std::dynamic_pointer_cast<Player>(_clients[i]);
         if (player == nullptr)
             continue;
         player->decrementLife(elapsedTicks);

@@ -23,11 +23,11 @@ class Server {
         int _listenFd;
         Args _args;
         std::vector<struct pollfd> _pollFds;
-        std::vector<std::unique_ptr<Client>> _clients;
+        std::vector<std::shared_ptr<Client>> _clients;
         void acceptNewClient();
         void handleClientData(size_t index);
         void removeClient(size_t index);
-        void processLine(Client &client, const std::string &line);
+        void processLine(std::shared_ptr<Client> client, const std::string &line);
         void handleTeamName(Client &client, const std::string &teamName);
         int findClientIndex(int fd);
 
