@@ -9,8 +9,6 @@
 #include <cstdlib>
 #include <string>
 
-namespace world {
-
 int Team::_nextEggId = 0; //must be defined exactly here 
 
 const std::string &Team::getName() const
@@ -66,6 +64,4 @@ void Team::removeClient()
 {
     if (_connectedClients > 0)
         _connectedClients--;
-}
-
 }

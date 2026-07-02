@@ -9,12 +9,12 @@
 
 namespace game {
 
-void Player::addToInv(world::Resource r, int amount)
+void Player::addToInv(Resource r, int amount)
 {
     _inventory[r] += amount;
 }
 
-void Player::removeFromInv(world::Resource r, int amount)
+void Player::removeFromInv(Resource r, int amount)
 {
     _inventory[r] -= amount;
     if (_inventory[r] < 0)

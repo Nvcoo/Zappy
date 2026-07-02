@@ -7,8 +7,6 @@
 
 #include "../../include/world/Elevation.hpp"
 
-namespace world {
-
 bool checkRequirements(int level, int playerCount, const Tile &tile)
 {
     if (level < 1 || level > 7)
@@ -46,6 +44,4 @@ void consumeResources(int level, Tile &tile)
     tile.removeResource(MENDIANE, required.mendiane);
     tile.removeResource(PHIRAS, required.phiras);
     tile.removeResource(THYSTAME, required.thystame);
-}
-
 }

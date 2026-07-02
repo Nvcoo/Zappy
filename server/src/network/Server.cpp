@@ -26,7 +26,7 @@ namespace network {
 Server::Server(const Args &args) : _listenFd(-1), _args(args), _map(args.width, args.height), _clock(args.freq)
 {
     for (const auto &name : args.teamNames)
-        _teams.push_back(world::Team(name, args.clientsNb));
+        _teams.push_back(Team(name, args.clientsNb));
     _listenFd = socket(AF_INET, SOCK_STREAM, 0);
     if (_listenFd < 0)
         throw std::runtime_error("Failed to create socket");
@@ -138,7 +138,7 @@ int Server::findClientIndex(int fd)
 
 void Server::handleTeamName(Client &client, const std::string &teamName)
 {
-    world::Team *team = findTeam(teamName);
+    Team *team = findTeam(teamName);
     if (team == nullptr || team->getAvailableSlots() <= 0) {
         client.sendMessage("ko\n");
         return;
@@ -147,7 +147,7 @@ void Server::handleTeamName(Client &client, const std::string &teamName)
     int spawnX = std::rand() % _map.getWidth();
     int spawnY = std::rand() % _map.getHeight();
     if (team->hasEgg()) {
-        world::Egg egg = team->popEgg();
+        Egg egg = team->popEgg();
         spawnX = egg.x;
         spawnY = egg.y;
     }
@@ -178,7 +178,7 @@ void Server::processLine(Client &client, const std::string &line)
         return;
 }
 
-world::Team *Server::findTeam(const std::string &name)
+Team *Server::findTeam(const std::string &name)
 {
     for (auto &team : _teams) {
         if (team.getName() == name)

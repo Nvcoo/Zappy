@@ -7,8 +7,6 @@
 
 #include "../../include/world/Tile.hpp"
 
-namespace world {
-
 Tile::Tile()
 {
     _playerCount = 0;
@@ -46,6 +44,4 @@ void Tile::removePlayer()
 {
     if (_playerCount > 0)
         _playerCount--;
-}
-
 }

@@ -9,8 +9,6 @@
 #include <cstdlib>
 #include <ctime>
 
-namespace world {
-
 Map::Map(int width, int height) : _width(width), _height(height)
 {
     _tiles.resize(width * height);
@@ -69,6 +67,4 @@ void Map::spawnResources()
             getTile(x, y).addResource(r, 1);
         }
     }
-}
-
 }
