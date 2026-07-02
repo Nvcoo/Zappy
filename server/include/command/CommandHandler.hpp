@@ -19,8 +19,8 @@ namespace command {
 
 game::Command parseCommand(const std::string &line);
 int getCommandCost(CommandType type);
-std::string executeCommand(game::Player &player, const game::Command &cmd, world::Map &map, std::vector<world::Team> &teams);
-void processPlayerCommands(game::Player &player, game::Clock &clock, world::Map &map, std::vector<world::Team> &teams);
+std::string executeCommand(game::Player &player, const game::Command &cmd, Map &map, std::vector<Team> &teams);
+void processPlayerCommands(game::Player &player, game::Clock &clock, Map &map, std::vector<Team> &teams);
 
 }
 

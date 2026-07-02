@@ -35,7 +35,7 @@ class Player : public network::Client {
         int _y;
         orientation_t _orientation;
         int _level;
-        int _inventory[world::RESOURCE_COUNT];
+        int _inventory[RESOURCE_COUNT];
         int _lifeTimer;
         std::string _teamName;
         std::queue<Command> _commandQueue;
@@ -45,7 +45,7 @@ class Player : public network::Client {
         Player(int fd, const std::string &teamName, int x, int y) : network::Client(fd, network::PLAYER), _x(x), _y(y), _orientation(NORTH), _level(1), _lifeTimer(1260), _teamName(teamName), _busy(false)
         {
             std::memset(_inventory, 0, sizeof(_inventory));
-            _inventory[world::FOOD] = 10;
+            _inventory[FOOD] = 10;
         }
 
         int getX() const
@@ -64,7 +64,7 @@ class Player : public network::Client {
         {
             return _level;
         }
-        int getInventory(world::Resource r) const
+        int getInventory(Resource r) const
         {
             return _inventory[r];
         }
@@ -102,8 +102,8 @@ class Player : public network::Client {
         {
             return _lifeTimer <= 0;
         }
-        void addToInv(world::Resource r, int amount);
-        void removeFromInv(world::Resource r, int amount);
+        void addToInv(Resource r, int amount);
+        void removeFromInv(Resource r, int amount);
         void decrementLife(int amount);
 
         bool pushCommand(const Command &cmd);

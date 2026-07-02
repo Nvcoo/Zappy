@@ -9,7 +9,6 @@
     #define ELEVATION_HPP_
 
 #include "Tile.hpp"
-namespace world {
 
 struct reqs {
     int players;
@@ -33,7 +32,5 @@ static const reqs table[7] = {
 
 bool checkRequirements(int level, int playerCount, const Tile &tile);
 void consumeResources(int level, Tile &tile);
-
-}
 
 #endif

@@ -10,8 +10,6 @@
 
 #include <array>
 
-namespace world {
-
 enum Resource {
     FOOD,
     LINEMATE,
@@ -37,7 +35,5 @@ class Tile {
         void addPlayer();
         void removePlayer();
 };
-
-}
 
 #endif

@@ -33,10 +33,10 @@ class Server {
         void handleTeamName(Client &client, const std::string &teamName);
         int findClientIndex(int fd);
 
-        world::Map _map;
-        std::vector<world::Team> _teams;
+        Map _map;
+        std::vector<Team> _teams;
         game::Clock _clock;
-        world::Team *findTeam(const std::string &name);
+        Team *findTeam(const std::string &name);
         void updateGame();
     protected:
     public:

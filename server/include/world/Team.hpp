@@ -11,8 +11,6 @@
 #include <string>
 #include <vector>
 
-namespace world {
-
 struct Egg {
     int id;
     int x;
@@ -39,7 +37,5 @@ class Team {
         void addClient();
         void removeClient();
 };
-
-}
 
 #endif

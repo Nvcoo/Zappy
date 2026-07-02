@@ -16,15 +16,15 @@
 
 namespace command {
 
-void moveForward(game::Player &player, world::Map &map);
+void moveForward(game::Player &player, Map &map);
 void rotateLeft(game::Player &player);
 void rotateRight(game::Player &player);
 std::string executeInventory(game::Player &player);
-std::string executeTake(game::Player &player, world::Map &map, const std::string &arg);
-std::string executeSet(game::Player &player, world::Map &map, const std::string &arg);
-std::string executeConnectNbr(game::Player &player, std::vector<world::Team> &teams);
+std::string executeTake(game::Player &player, Map &map, const std::string &arg);
+std::string executeSet(game::Player &player, Map &map, const std::string &arg);
+std::string executeConnectNbr(game::Player &player, std::vector<Team> &teams);
 
-world::Resource nameToResource(const std::string &name);
+Resource nameToResource(const std::string &name);
 
 }
 
