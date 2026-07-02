@@ -10,8 +10,6 @@
 
 #include <string>
 
-namespace command {
-
 enum CommandType {
     FORWARD,
     LEFT,
@@ -29,7 +27,5 @@ enum CommandType {
 };
 
 CommandType nameToType(const std::string &name);
-
-}
 
 #endif

@@ -15,13 +15,9 @@
 #include "../world/Team.hpp"
 #include <vector>
 
-namespace command {
-
 Command parseCommand(const std::string &line);
 int getCommandCost(CommandType type);
 std::string executeCommand(Player &player, const Command &cmd, Map &map, std::vector<Team> &teams);
 void processPlayerCommands(Player &player, Clock &clock, Map &map, std::vector<Team> &teams);
-
-}
 
 #endif

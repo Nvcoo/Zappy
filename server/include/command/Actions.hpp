@@ -14,8 +14,6 @@
 #include <string>
 #include <vector>
 
-namespace command {
-
 void moveForward(Player &player, Map &map);
 void rotateLeft(Player &player);
 void rotateRight(Player &player);
@@ -25,7 +23,5 @@ std::string executeSet(Player &player, Map &map, const std::string &arg);
 std::string executeConnectNbr(Player &player, std::vector<Team> &teams);
 
 Resource nameToResource(const std::string &name);
-
-}
 
 #endif
