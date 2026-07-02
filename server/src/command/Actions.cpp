@@ -9,8 +9,6 @@
 #include <string>
 #include <vector>
 
-namespace command {
-
 void rotateLeft(Player &player)
 {
     switch (player.getOrientation()) {
@@ -140,6 +138,4 @@ Resource nameToResource(const std::string &name)
     if (name == "thystame")
         return THYSTAME;
     return RESOURCE_COUNT; //we'll return this if it's invalid
-}
-
 }

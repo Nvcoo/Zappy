@@ -7,8 +7,6 @@
 
 #include "../../include/command/CommandType.hpp"
 
-namespace command {
-
 CommandType nameToType(const std::string &name)
 {
     if (name == "Forward")
@@ -36,6 +34,4 @@ CommandType nameToType(const std::string &name)
     if (name == "Incantation")
         return INCANTATION;
     return UNKNOWN;
-}
-
 }

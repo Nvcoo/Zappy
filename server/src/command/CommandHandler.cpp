@@ -8,8 +8,6 @@
 #include "../../include/command/CommandHandler.hpp"
 #include "../../include/command/Actions.hpp"
 
-namespace command {
-
 Command parseCommand(const std::string &line)
 {
     Command cmd;
@@ -102,6 +100,4 @@ void processPlayerCommands(Player &player, Clock &clock, Map &map, std::vector<T
     std::string response = executeCommand(player, cmd, map, teams);
     player.sendMessage(response);
     player.popCommand();
-}
-
 }

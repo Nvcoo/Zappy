@@ -170,7 +170,7 @@ void Server::processLine(Client &client, const std::string &line)
         return;
     }
 
-    Command cmd = command::parseCommand(line);
+    Command cmd = parseCommand(line);
     bool queued = player->pushCommand(cmd);
     if (!queued)
         return;
@@ -209,6 +209,6 @@ void Server::updateGame()
             i--;
             continue;
         }
-        command::processPlayerCommands(*player, _clock, _map, _teams);
+        processPlayerCommands(*player, _clock, _map, _teams);
     }
 }
