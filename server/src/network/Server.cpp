@@ -211,7 +211,7 @@ void Server::updateGame()
             i--;
             continue;
         }
-        command::processPlayerCommands(*player, _clock, _map);
+        command::processPlayerCommands(*player, _clock, _map, _teams);
     }
 }
 

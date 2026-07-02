@@ -7,6 +7,7 @@
 
 #include "../../include/command/Actions.hpp"
 #include <string>
+#include <vector>
 
 namespace command {
 
@@ -111,6 +112,15 @@ std::string executeSet(game::Player &player, world::Map &map, const std::string 
     world::Tile &tile = map.getTile(player.getX(), player.getY());
     tile.addResource(r, r);
     return "ok\n";
+}
+
+std::string executeConnectNbr(game::Player &player, std::vector<world::Team> &teams)
+{
+    for (auto &team: teams) {
+        if (team.getName() == player.getTeamName())
+            return std::to_string(team.getAvailableSlots()) + "\n";
+    }
+    return "0\n";
 }
 
 world::Resource nameToResource(const std::string &name)
