@@ -29,7 +29,7 @@ struct Command {
     int executeAt;
 };
 
-class Player : public network::Client {
+class Player : public Client {
     private:
         int _x;
         int _y;
@@ -42,7 +42,7 @@ class Player : public network::Client {
         bool _busy;
     protected:
     public:
-        Player(int fd, const std::string &teamName, int x, int y) : network::Client(fd, network::PLAYER), _x(x), _y(y), _orientation(NORTH), _level(1), _lifeTimer(1260), _teamName(teamName), _busy(false)
+        Player(int fd, const std::string &teamName, int x, int y) : Client(fd, PLAYER), _x(x), _y(y), _orientation(NORTH), _level(1), _lifeTimer(1260), _teamName(teamName), _busy(false)
         {
             std::memset(_inventory, 0, sizeof(_inventory));
             _inventory[FOOD] = 10;

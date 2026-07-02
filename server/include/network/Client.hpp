@@ -10,8 +10,6 @@
 
 #include <string>
 
-namespace network {
-
 typedef enum ClientType{
     PLAYER,
     GUI
@@ -33,7 +31,5 @@ class Client {
         std::string popLine();
         void sendMessage(const std::string &message) const;
 };
-
-}
 
 #endif

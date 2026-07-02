@@ -11,8 +11,6 @@
 #include <string>
 #include <vector>
 
-namespace network {
-
 struct Args {
     int port;
     int width;
@@ -23,7 +21,5 @@ struct Args {
 };
 
 Args parseArgs(int ac, char **av);
-
-}
 
 #endif

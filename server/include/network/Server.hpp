@@ -18,8 +18,6 @@
 #include <vector>
 #include <poll.h>
 
-namespace network {
-
 class Server {
     private:
         int _listenFd;
@@ -44,7 +42,5 @@ class Server {
         ~Server();
         void run();
 };
-
-}
 
 #endif
