@@ -10,8 +10,6 @@
 #include <iostream>
 #include "../../include/network/Args.hpp"
 
-namespace network {
-
 static void printUsage()
 {
     std::cerr << "USAGE: ./zappy_server -p port -x width -y height -n name1 name2 ... -c clientsNb -f freq" << std::endl;
@@ -76,6 +74,4 @@ Args parseArgs(int ac, char **av)
     if (args.port == 0 || args.width == 0 || args.height == 0 || args.clientsNb == 0 || args.teamNames.empty())
         printUsage();
     return args;
-}
-
 }
