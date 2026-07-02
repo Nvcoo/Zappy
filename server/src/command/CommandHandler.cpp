@@ -58,7 +58,7 @@ int getCommandCost(CommandType type)
     }
 }
 
-std::string executeCommand(game::Player &player, const game::Command &cmd, world::Map &map)
+std::string executeCommand(game::Player &player, const game::Command &cmd, world::Map &map, std::vector<world::Team> &teams)
 {
     switch (nameToType(cmd.name)) {
         case FORWARD:
@@ -76,6 +76,8 @@ std::string executeCommand(game::Player &player, const game::Command &cmd, world
             return executeTake(player, map, cmd.arg);
         case SET:
             return executeSet(player, map, cmd.arg);
+        case CONNECT_NBR:
+            return executeConnectNbr(player, teams);
         case UNKNOWN:
             return "ko\n";
         default:
@@ -83,7 +85,7 @@ std::string executeCommand(game::Player &player, const game::Command &cmd, world
     }
 }
 
-void processPlayerCommands(game::Player &player, game::Clock &clock, world::Map &map)
+void processPlayerCommands(game::Player &player, game::Clock &clock, world::Map &map, std::vector<world::Team> &teams)
 {
     if (!player.hasCommand())
         return;
@@ -97,7 +99,7 @@ void processPlayerCommands(game::Player &player, game::Clock &clock, world::Map 
     }
     if (clock.now() < cmd.executeAt)
         return;
-    std::string response = executeCommand(player, cmd, map);
+    std::string response = executeCommand(player, cmd, map, teams);
     player.sendMessage(response);
     player.popCommand();
 }
