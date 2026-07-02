@@ -10,8 +10,6 @@
 
 #include <chrono>
 
-namespace game {
-
 class Clock {
     private:
         int _freq;
@@ -36,7 +34,5 @@ class Clock {
         int now() const;
         int elapsedTicks();
 };
-
-}
 
 #endif

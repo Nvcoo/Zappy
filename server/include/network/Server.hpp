@@ -33,7 +33,7 @@ class Server {
 
         Map _map;
         std::vector<Team> _teams;
-        game::Clock _clock;
+        Clock _clock;
         Team *findTeam(const std::string &name);
         void updateGame();
     protected:

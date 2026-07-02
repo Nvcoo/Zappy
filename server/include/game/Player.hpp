@@ -14,8 +14,6 @@
 #include "../network/Client.hpp"
 #include "../world/Tile.hpp"
 
-namespace game {
-
 typedef enum orientation {
     NORTH = 1,
     EAST = 2,
@@ -111,7 +109,5 @@ class Player : public Client {
         Command &frontCommand();
         void popCommand();
 };
-
-}
 
 #endif
