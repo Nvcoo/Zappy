@@ -13,8 +13,8 @@
 int main(int ac, char **av)
 {
     try {
-        network::Args args = network::parseArgs(ac, av);
-        network::Server server(args);
+        Args args = parseArgs(ac, av);
+        Server server(args);
         server.run();
     } catch (const std::exception &e) {
         std::cerr << e.what() << std::endl;

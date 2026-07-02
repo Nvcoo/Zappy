@@ -8,8 +8,6 @@
 #include <unistd.h>
 #include "../../include/network/Client.hpp"
 
-namespace network {
-
 int Client::getFd() const
 {
     return _fd;
@@ -42,6 +40,4 @@ std::string Client::popLine()
 void Client::sendMessage(const std::string &message) const
 {
     write(_fd, message.c_str(), message.size());
-}
-
 }

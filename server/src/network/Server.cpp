@@ -21,8 +21,6 @@
 #include <utility>
 #include <cstdlib>
 
-namespace network {
-
 Server::Server(const Args &args) : _listenFd(-1), _args(args), _map(args.width, args.height), _clock(args.freq)
 {
     for (const auto &name : args.teamNames)
@@ -213,6 +211,4 @@ void Server::updateGame()
         }
         command::processPlayerCommands(*player, _clock, _map, _teams);
     }
-}
-
 }
