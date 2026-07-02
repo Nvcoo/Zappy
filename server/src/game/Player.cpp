@@ -7,8 +7,6 @@
 
 #include "../../include/game/Player.hpp"
 
-namespace game {
-
 void Player::addToInv(Resource r, int amount)
 {
     _inventory[r] += amount;
@@ -50,6 +48,4 @@ void Player::popCommand()
 {
     if (!_commandQueue.empty())
         _commandQueue.pop();
-}
-
 }

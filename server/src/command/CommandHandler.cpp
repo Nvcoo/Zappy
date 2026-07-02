@@ -10,9 +10,9 @@
 
 namespace command {
 
-game::Command parseCommand(const std::string &line)
+Command parseCommand(const std::string &line)
 {
-    game::Command cmd;
+    Command cmd;
     size_t spacePos = line.find(' ');
 
     if (spacePos == std::string::npos) {
@@ -58,7 +58,7 @@ int getCommandCost(CommandType type)
     }
 }
 
-std::string executeCommand(game::Player &player, const game::Command &cmd, Map &map, std::vector<Team> &teams)
+std::string executeCommand(Player &player, const Command &cmd, Map &map, std::vector<Team> &teams)
 {
     switch (nameToType(cmd.name)) {
         case FORWARD:
@@ -85,12 +85,12 @@ std::string executeCommand(game::Player &player, const game::Command &cmd, Map &
     }
 }
 
-void processPlayerCommands(game::Player &player, game::Clock &clock, Map &map, std::vector<Team> &teams)
+void processPlayerCommands(Player &player, Clock &clock, Map &map, std::vector<Team> &teams)
 {
     if (!player.hasCommand())
         return;
 
-    game::Command &cmd = player.frontCommand();
+    Command &cmd = player.frontCommand();
 
     if (cmd.executeAt == 0) {
         int costTicks = getCommandCost(nameToType(cmd.name));

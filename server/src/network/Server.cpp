@@ -150,7 +150,7 @@ void Server::handleTeamName(Client &client, const std::string &teamName)
         spawnY = egg.y;
     }
 
-    auto new_player = std::make_unique<game::Player>(client.getFd(), teamName, spawnX, spawnY);
+    auto new_player = std::make_unique<Player>(client.getFd(), teamName, spawnX, spawnY);
     team->addClient();
 
     int index = findClientIndex(client.getFd());
@@ -163,14 +163,14 @@ void Server::handleTeamName(Client &client, const std::string &teamName)
 
 void Server::processLine(Client &client, const std::string &line)
 {
-    game::Player *player = dynamic_cast<game::Player *>(&client);
+    Player *player = dynamic_cast<Player *>(&client);
 
     if (player == nullptr) {
         handleTeamName(client, line);
         return;
     }
 
-    game::Command cmd = command::parseCommand(line);
+    Command cmd = command::parseCommand(line);
     bool queued = player->pushCommand(cmd);
     if (!queued)
         return;
@@ -198,7 +198,7 @@ void Server::updateGame()
         return;
 
     for (size_t i = 0; i < _clients.size(); i++) {
-        game::Player *player = dynamic_cast<game::Player *>(_clients[i].get());
+        Player *player = dynamic_cast<Player *>(_clients[i].get());
         if (player == nullptr)
             continue;
         player->decrementLife(elapsedTicks);

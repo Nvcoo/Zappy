@@ -7,8 +7,6 @@
 
 #include "../../include/game/Clock.hpp"
 
-namespace game {
-
 int Clock::now() const
 {
     auto current = std::chrono::steady_clock::now();
@@ -36,6 +34,4 @@ int Clock::elapsedTicks()
     if (ticks > 0)
         _lastTick += std::chrono::milliseconds(ticks * msTick);
     return ticks;
-}
-
 }

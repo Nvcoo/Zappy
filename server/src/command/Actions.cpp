@@ -11,58 +11,58 @@
 
 namespace command {
 
-void rotateLeft(game::Player &player)
+void rotateLeft(Player &player)
 {
     switch (player.getOrientation()) {
-        case game::NORTH:
-            player.setOrientation(game::WEST);
+        case NORTH:
+            player.setOrientation(WEST);
             break;
-        case game::WEST:
-            player.setOrientation(game::SOUTH);
+        case WEST:
+            player.setOrientation(SOUTH);
             break;
-        case game::SOUTH:
-            player.setOrientation(game::EAST);
+        case SOUTH:
+            player.setOrientation(EAST);
             break;
-        case game::EAST:
-            player.setOrientation(game::NORTH);
+        case EAST:
+            player.setOrientation(NORTH);
             break;
     }
 }
 
-void rotateRight(game::Player &player)
+void rotateRight(Player &player)
 {
     switch (player.getOrientation()) {
-        case game::NORTH:
-            player.setOrientation(game::EAST);
+        case NORTH:
+            player.setOrientation(EAST);
             break;
-        case game::WEST:
-            player.setOrientation(game::NORTH);
+        case WEST:
+            player.setOrientation(NORTH);
             break;
-        case game::SOUTH:
-            player.setOrientation(game::WEST);
+        case SOUTH:
+            player.setOrientation(WEST);
             break;
-        case game::EAST:
-            player.setOrientation(game::SOUTH);
+        case EAST:
+            player.setOrientation(SOUTH);
             break;
     }
 }
 
-void moveForward(game::Player &player, Map &map)
+void moveForward(Player &player, Map &map)
 {
     int x = player.getX();
     int y = player.getY();
 
     switch (player.getOrientation()) {
-        case game::NORTH:
+        case NORTH:
             y -= 1;
             break;
-        case game::SOUTH:
+        case SOUTH:
             y += 1;
             break;
-        case game::EAST:
+        case EAST:
             x += 1;
             break;
-        case game::WEST:
+        case WEST:
             x -= 1;
             break;
     }
@@ -71,7 +71,7 @@ void moveForward(game::Player &player, Map &map)
     player.setPos(x, y);
 }
 
-std::string executeInventory(game::Player &player)
+std::string executeInventory(Player &player)
 {
     std::string response = "[";
     response += "food " + std::to_string(player.getInventory(FOOD));
@@ -85,7 +85,7 @@ std::string executeInventory(game::Player &player)
     return response;
 }
 
-std::string executeTake(game::Player &player, Map &map, const std::string &arg)
+std::string executeTake(Player &player, Map &map, const std::string &arg)
 {
     Resource r = nameToResource(arg);
 
@@ -100,7 +100,7 @@ std::string executeTake(game::Player &player, Map &map, const std::string &arg)
     return "ok\n";
 }
 
-std::string executeSet(game::Player &player, Map &map, const std::string &arg)
+std::string executeSet(Player &player, Map &map, const std::string &arg)
 {
     Resource r = nameToResource(arg);
 
@@ -114,7 +114,7 @@ std::string executeSet(game::Player &player, Map &map, const std::string &arg)
     return "ok\n";
 }
 
-std::string executeConnectNbr(game::Player &player, std::vector<Team> &teams)
+std::string executeConnectNbr(Player &player, std::vector<Team> &teams)
 {
     for (auto &team: teams) {
         if (team.getName() == player.getTeamName())
