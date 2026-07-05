@@ -164,7 +164,6 @@ void Server::handleTeamName(Client &client, const std::string &teamName)
 
 void Server::processLine(std::shared_ptr<Client> client, const std::string &line)
 {
-    //Player *player = dynamic_cast<Player *>(&client);
     auto player = std::dynamic_pointer_cast<Player>(client);
 
     if (player == nullptr) {
@@ -173,9 +172,8 @@ void Server::processLine(std::shared_ptr<Client> client, const std::string &line
     }
 
     Command cmd = parseCommand(line);
-    bool queued = player->pushCommand(cmd);
-    if (!queued)
-        return;
+    if (!player->pushCommand(cmd))
+        std::cout << "Command queue full for player on fd " << player->getFd() << std::endl;
 }
 
 Team *Server::findTeam(const std::string &name)
