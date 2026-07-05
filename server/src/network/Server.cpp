@@ -102,18 +102,23 @@ void Server::acceptNewClient()
 
 void Server::handleClientData(size_t index)
 {
-    Client &client = *_clients[index - 1];
+    auto &client = _clients[index - 1];
     char buffer[1024];
-    ssize_t bytesRead = read(client.getFd(), buffer, sizeof(buffer) - 1);
+    ssize_t bytesRead = read(client->getFd(), buffer, sizeof(buffer) - 1);
 
     if (bytesRead <= 0) {
         removeClient(index);
         return;
     }
     buffer[bytesRead] = '\0';
-    client.appendToBuffer(std::string(buffer, bytesRead));
-    while (client.hasLine()) {
-        std::string line = client.popLine();
+    client->appendToBuffer(std::string(buffer, bytesRead));
+    if (client->hasOverflow()) {
+        std::cerr << "Disconnecting client on fd " << client->getFd() << " due to buffer overflow" << std::endl;
+        removeClient(index);
+        return;
+    }
+    while (client->hasLine()) {
+        std::string line = client->popLine();
         processLine(_clients[index - 1], line);
     }
 }
