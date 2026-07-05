@@ -19,12 +19,18 @@ client_type_t Client::getType() const
     return _type;
 }
 
+bool Client::hasOverflow() const
+{
+    return _overflow;
+}
+
 void Client::appendToBuffer(const std::string &data)
 {
     _buffer += data;
     if (_buffer.size() > 1024) {
         std::cerr << "Buffer overflow on fd " << _fd << std::endl;
         _buffer.clear();
+        _overflow = true;
     }
 }
 
