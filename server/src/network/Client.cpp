@@ -5,6 +5,7 @@
 ** Client
 */
 
+#include <iostream>
 #include <unistd.h>
 #include "../../include/network/Client.hpp"
 
@@ -21,6 +22,10 @@ client_type_t Client::getType() const
 void Client::appendToBuffer(const std::string &data)
 {
     _buffer += data;
+    if (_buffer.size() > 1024) {
+        std::cerr << "Buffer overflow on fd " << _fd << std::endl;
+        _buffer.clear();
+    }
 }
 
 bool Client::hasLine() const
