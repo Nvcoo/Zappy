@@ -5,3 +5,4 @@ zappy_server
 gui/cmake_install.cmake
 gui/CMakeCache.txt
 gui/CMakeFiles/
+*.o
