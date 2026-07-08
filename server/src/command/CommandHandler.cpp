@@ -56,7 +56,7 @@ int getCommandCost(CommandType type)
     }
 }
 
-std::string executeCommand(Player &player, const Command &cmd, Map &map, std::vector<Team> &teams)
+std::string executeCommand(Player &player, const Command &cmd, Map &map, std::vector<Team> &teams, std::vector<std::shared_ptr<Client>> &clients)
 {
     switch (nameToType(cmd.name)) {
         case FORWARD:
@@ -76,6 +76,8 @@ std::string executeCommand(Player &player, const Command &cmd, Map &map, std::ve
             return executeSet(player, map, cmd.arg);
         case CONNECT_NBR:
             return executeConnectNbr(player, teams);
+        case BROADCAST:
+            return executeBroadcast(player, cmd.arg, clients, map);
         case UNKNOWN:
             return "ko\n";
         default:
@@ -83,7 +85,7 @@ std::string executeCommand(Player &player, const Command &cmd, Map &map, std::ve
     }
 }
 
-void processPlayerCommands(Player &player, Clock &clock, Map &map, std::vector<Team> &teams)
+void processPlayerCommands(Player &player, Clock &clock, Map &map, std::vector<Team> &teams, std::vector<std::shared_ptr<Client>> &clients)
 {
     if (!player.hasCommand())
         return;
@@ -97,7 +99,7 @@ void processPlayerCommands(Player &player, Clock &clock, Map &map, std::vector<T
     }
     if (clock.now() < cmd.executeAt)
         return;
-    std::string response = executeCommand(player, cmd, map, teams);
+    std::string response = executeCommand(player, cmd, map, teams, clients);
     player.sendMessage(response);
     player.popCommand();
 }
