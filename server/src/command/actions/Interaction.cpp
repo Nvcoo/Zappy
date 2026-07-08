@@ -6,11 +6,6 @@
 */
 
 #include "../../../include/command/Actions.hpp"
-#include <cstddef>
-#include <memory>
-#include <string>
-#include <utility>
-#include <vector>
 
 static int calculateDir(int sendX, int sendY, int recX, int recY, orientation_t recOrientation, int width, int height)
 {
