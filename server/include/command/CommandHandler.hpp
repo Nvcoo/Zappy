@@ -13,11 +13,12 @@
 #include "../world/Map.hpp"
 #include "CommandType.hpp"
 #include "../world/Team.hpp"
+#include <memory>
 #include <vector>
 
 Command parseCommand(const std::string &line);
 int getCommandCost(CommandType type);
-std::string executeCommand(Player &player, const Command &cmd, Map &map, std::vector<Team> &teams);
-void processPlayerCommands(Player &player, Clock &clock, Map &map, std::vector<Team> &teams);
+std::string executeCommand(Player &player, const Command &cmd, Map &map, std::vector<Team> &teams, std::vector<std::shared_ptr<Client>> &clients);
+void processPlayerCommands(Player &player, Clock &clock, Map &map, std::vector<Team> &teams, std::vector<std::shared_ptr<Client>> &clients);
 
 #endif
