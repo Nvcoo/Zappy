@@ -20,8 +20,12 @@ SRC =	main.cpp \
 		src/game/Player.cpp \
 		src/game/Clock.cpp \
 		src/command/CommandType.cpp \
-		src/command/Actions.cpp \
-		src/command/CommandHandler.cpp
+		src/command/CommandHandler.cpp \
+		src/command/actions/Information.cpp \
+		src/command/actions/Interaction.cpp \
+		src/command/actions/Inventory.cpp \
+		src/command/actions/Movement.cpp \
+		src/command/actions/Utilities.cpp
 
 OBJ = $(SRC:.cpp=.o)
 
