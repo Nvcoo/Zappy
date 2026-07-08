@@ -167,8 +167,8 @@ std::string executeBroadcast(Player &sender, const std::string &text, std::vecto
         auto rec = std::dynamic_pointer_cast<Player>(client);
         if (rec == nullptr)
             continue;
-        int message = calculateDir(sender.getX(), sender.getY(), rec->getX(), rec->getY(), rec->getOrientation(), map.getWidth(), map.getHeight());
-        rec->sendMessage("message " + std::to_string(message) + ", " + text + "\n");
+        int k = calculateDir(sender.getX(), sender.getY(), rec->getX(), rec->getY(), rec->getOrientation(), map.getWidth(), map.getHeight());
+        rec->sendMessage("message " + std::to_string(k) + ", " + text + "\n");
     }
     return "ok\n";
 }
