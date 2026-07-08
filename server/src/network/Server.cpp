@@ -9,8 +9,6 @@
 #include "../../include/game/Player.hpp"
 #include "../../include/command/CommandHandler.hpp"
 #include <cmath>
-#include <cstddef>
-#include <memory>
 #include <string>
 #include <sys/poll.h>
 #include <unistd.h>
