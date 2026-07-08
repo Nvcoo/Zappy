@@ -78,6 +78,8 @@ std::string executeCommand(Player &player, const Command &cmd, Map &map, std::ve
             return executeConnectNbr(player, teams);
         case BROADCAST:
             return executeBroadcast(player, cmd.arg, clients, map);
+        case LOOK:
+            return executeLook(player, map, clients);
         case UNKNOWN:
             return "ko\n";
         default:
