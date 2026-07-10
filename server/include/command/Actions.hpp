@@ -31,6 +31,7 @@ std::string executeLook(Player &player, Map &map, std::vector<std::shared_ptr<Cl
 
 //Interaction
 std::string executeBroadcast(Player &sender, const std::string &text, std::vector<std::shared_ptr<Client>> &clients, Map &map);
+std::string executeFork(Player &player, std::vector<Team> &teams);
 
 //Utilities
 Resource nameToResource(const std::string &name);

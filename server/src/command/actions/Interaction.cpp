@@ -57,3 +57,14 @@ std::string executeBroadcast(Player &sender, const std::string &text, std::vecto
     }
     return "ok\n";
 }
+
+std::string executeFork(Player &player, std::vector<Team> &teams)
+{
+    for (auto &team: teams) {
+        if (team.getName() != player.getTeamName())
+            continue;
+        team.addEgg(player.getX(), player.getY());
+        return "ok\n";
+    }
+    return "ok\n";
+}
