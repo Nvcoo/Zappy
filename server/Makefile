@@ -25,7 +25,8 @@ SRC =	main.cpp \
 		src/command/actions/Interaction.cpp \
 		src/command/actions/Inventory.cpp \
 		src/command/actions/Movement.cpp \
-		src/command/actions/Utilities.cpp
+		src/command/actions/Utilities.cpp \
+		src/command/actions/Incantation.cpp
 
 OBJ = $(SRC:.cpp=.o)
 

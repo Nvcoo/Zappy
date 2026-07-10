@@ -11,6 +11,7 @@
 #include "../game/Player.hpp"
 #include "../world/Map.hpp"
 #include "../world/Team.hpp"
+#include "../game/Clock.hpp"
 #include <memory>
 #include <string>
 #include <vector>
@@ -33,6 +34,10 @@ std::string executeLook(Player &player, Map &map, std::vector<std::shared_ptr<Cl
 std::string executeBroadcast(Player &sender, const std::string &text, std::vector<std::shared_ptr<Client>> &clients, Map &map);
 std::string executeFork(Player &player, std::vector<Team> &teams);
 std::string executeEject(Player &player, Map &map, std::vector<std::shared_ptr<Client>> &clients);
+
+//Incantation
+void incantationStart(Player &player, Map &map, std::vector<std::shared_ptr<Client>> &clients, Clock &clock);
+std::string incantationEnd(Player &player, Map &map, std::vector<std::shared_ptr<Client>> &clients);
 
 //Utilities
 Resource nameToResource(const std::string &name);
