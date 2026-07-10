@@ -94,7 +94,14 @@ std::string executeEject(Player &player, Map &map, std::vector<std::shared_ptr<C
     }
 
     //Calculate the direction from which the ejected players came from
-    int k = (static_cast<int>(player.getOrientation()) + 2) % 4 + 1;
+    int k = 0;
+    switch (player.getOrientation()) {
+        case NORTH: k = 5; break;
+        case EAST: k = 7; break;
+        case SOUTH: k = 1; break;
+        case WEST: k = 3; break;
+        default: k = 0; break;
+    }
     int w = map.getWidth();
     int h = map.getHeight();
 
