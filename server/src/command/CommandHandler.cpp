@@ -82,6 +82,8 @@ std::string executeCommand(Player &player, const Command &cmd, Map &map, std::ve
             return executeLook(player, map, clients);
         case FORK:
             return executeFork(player, teams);
+        case EJECT:
+            return executeEject(player, map, clients);
         case UNKNOWN:
             return "ko\n";
         default:
