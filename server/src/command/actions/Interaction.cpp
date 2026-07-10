@@ -6,6 +6,9 @@
 */
 
 #include "../../../include/command/Actions.hpp"
+#include <memory>
+#include <string>
+#include <vector>
 
 static int calculateDir(int sendX, int sendY, int recX, int recY, orientation_t recOrientation, int width, int height)
 {
@@ -65,6 +68,47 @@ std::string executeFork(Player &player, std::vector<Team> &teams)
             continue;
         team.addEgg(player.getX(), player.getY());
         return "ok\n";
+    }
+    return "ok\n";
+}
+
+std::string executeEject(Player &player, Map &map, std::vector<std::shared_ptr<Client>> &clients)
+{
+    std::vector<std::shared_ptr<Player>> eject;
+
+    //Finding all players on the same tile as the player
+    for (auto &client : clients) {
+        auto p = std::dynamic_pointer_cast<Player>(client);
+        if (p == nullptr) {
+            continue;
+        }
+        if (p.get() == &player) {
+            continue;
+        }
+        if (p->getX() == player.getX() && p->getY() == player.getY()) {
+            eject.push_back(p);
+        }
+    }
+    if (eject.empty()) {
+        return "ok\n";
+    }
+
+    //Calculate the direction from which the ejected players came from
+    int k = (static_cast<int>(player.getOrientation()) + 2) % 4 + 1;
+    int w = map.getWidth();
+    int h = map.getHeight();
+
+    for (auto &p : eject) {
+        int newX = p->getX();
+        int newY = p->getY();
+        switch (player.getOrientation()) {
+            case NORTH: newY = ((newY - 1) % h + h) % h; break;
+            case EAST: newX = (newX + 1) % w; break;
+            case SOUTH: newY = (newY + 1) % h; break;
+            case WEST: newX = ((newX - 1) % w + w) % w; break;
+        }
+        p->setPos(newX, newY);
+        p->sendMessage("eject: " + std::to_string(k) + "\n");
     }
     return "ok\n";
 }
