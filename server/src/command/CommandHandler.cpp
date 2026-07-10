@@ -95,17 +95,24 @@ void processPlayerCommands(Player &player, Clock &clock, Map &map, std::vector<T
 {
     if (!player.hasCommand())
         return;
+    if (player.isBusy() && !player.isInIncantation())
+        return;
 
     Command &cmd = player.frontCommand();
 
     if (cmd.executeAt == 0) {
         int costTicks = getCommandCost(nameToType(cmd.name));
         cmd.executeAt = clock.now() + clock.milliseconds(costTicks);
+        if (nameToType(cmd.name) == INCANTATION) {
+            incantationStart(player, map, clients, clock);
+            cmd.started = true;
+        }
         return;
     }
     if (clock.now() < cmd.executeAt)
         return;
     std::string response = executeCommand(player, cmd, map, teams, clients);
-    player.sendMessage(response);
+    if (!response.empty())
+        player.sendMessage(response);
     player.popCommand();
 }

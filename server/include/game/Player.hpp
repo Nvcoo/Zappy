@@ -25,6 +25,7 @@ struct Command {
     std::string name;
     std::string arg;
     int executeAt;
+    bool started;
 };
 
 class Player : public Client {
@@ -38,9 +39,10 @@ class Player : public Client {
         std::string _teamName;
         std::queue<Command> _commandQueue;
         bool _busy;
+        bool _inIncantation;
     protected:
     public:
-        Player(int fd, const std::string &teamName, int x, int y) : Client(fd, PLAYER), _x(x), _y(y), _orientation(NORTH), _level(1), _lifeTimer(1260), _teamName(teamName), _busy(false)
+        Player(int fd, const std::string &teamName, int x, int y) : Client(fd, PLAYER), _x(x), _y(y), _orientation(NORTH), _level(1), _lifeTimer(1260), _teamName(teamName), _busy(false), _inIncantation(false)
         {
             std::memset(_inventory, 0, sizeof(_inventory));
             _inventory[FOOD] = 10;
@@ -99,6 +101,14 @@ class Player : public Client {
         bool isDead() const
         {
             return _lifeTimer <= 0;
+        }
+        bool isInIncantation() const
+        {
+            return _inIncantation;
+        }
+        void setInIncantation(bool v)
+        {
+            _inIncantation = v;
         }
         void addToInv(Resource r, int amount);
         void removeFromInv(Resource r, int amount);
