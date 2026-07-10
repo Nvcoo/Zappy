@@ -24,6 +24,13 @@ Server::Server(const Args &args) : _listenFd(-1), _args(args), _map(args.width, 
 {
     for (const auto &name : args.teamNames)
         _teams.push_back(Team(name, args.clientsNb));
+    for (auto &team : _teams) {
+        for (int i = 0; i < args.clientsNb; i++) {
+            int x = std::rand() % args.width;
+            int y = std::rand() % args.height;
+            team.addEgg(x, y);
+        }
+    }
     _listenFd = socket(AF_INET, SOCK_STREAM, 0);
     if (_listenFd < 0)
         throw std::runtime_error("Failed to create socket");
@@ -146,15 +153,8 @@ void Server::handleTeamName(Client &client, const std::string &teamName)
         return;
     }
 
-    int spawnX = std::rand() % _map.getWidth();
-    int spawnY = std::rand() % _map.getHeight();
-    if (team->hasEgg()) {
-        Egg egg = team->popEgg();
-        spawnX = egg.x;
-        spawnY = egg.y;
-    }
-
-    auto new_player = std::make_shared<Player>(client.getFd(), teamName, spawnX, spawnY);
+    Egg egg = team->popEgg();
+    auto new_player = std::make_shared<Player>(client.getFd(), teamName, egg.x, egg.y);
     team->addClient();
 
     int index = findClientIndex(client.getFd());

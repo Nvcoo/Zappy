@@ -28,7 +28,7 @@ int Team::getConnectedClients() const
 
 int Team::getAvailableSlots() const
 {
-    return _maxClients - _connectedClients;
+    return _eggs.size(); //add int cast if error
 }
 
 void Team::addEgg(int x, int y)
