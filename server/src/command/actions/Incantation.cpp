@@ -26,7 +26,7 @@ static std::vector<std::shared_ptr<Player>> getParticipants(Player &initiator, s
     return participants;
 }
 
-void incantationStart(Player &player, Map &map, std::vector<std::shared_ptr<Client>> &clients, Clock &clock)
+void incantationStart(Player &player, Map &map, std::vector<std::shared_ptr<Client>> &clients)
 {
     Tile &tile = map.getTile(player.getX(), player.getY());
     auto participants = getParticipants(player, clients);
@@ -39,7 +39,7 @@ void incantationStart(Player &player, Map &map, std::vector<std::shared_ptr<Clie
     for (auto &p : participants) {
         p->setBusy(true);
         p->setInIncantation(true);
-        p->sendMessage("Elevation Underway\n");
+        p->sendMessage("Elevation underway\n");
     }
 }
 
@@ -67,7 +67,7 @@ std::string incantationEnd(Player &player, Map &map, std::vector<std::shared_ptr
     int newLvl = player.getLevel() + 1;
 
     consumeResources(player.getLevel(), tile);
-    std::string response = "Current level : " + std::to_string(newLvl) + "\n";
+    std::string response = "Current level: " + std::to_string(newLvl) + "\n";
     for (auto &p : stillIn) {
         p->setLevel(newLvl);
         p->setBusy(false);

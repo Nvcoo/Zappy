@@ -36,7 +36,7 @@ std::string executeFork(Player &player, std::vector<Team> &teams);
 std::string executeEject(Player &player, Map &map, std::vector<std::shared_ptr<Client>> &clients);
 
 //Incantation
-void incantationStart(Player &player, Map &map, std::vector<std::shared_ptr<Client>> &clients, Clock &clock);
+void incantationStart(Player &player, Map &map, std::vector<std::shared_ptr<Client>> &clients);
 std::string incantationEnd(Player &player, Map &map, std::vector<std::shared_ptr<Client>> &clients);
 
 //Utilities

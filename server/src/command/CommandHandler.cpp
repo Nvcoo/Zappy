@@ -108,7 +108,7 @@ void processPlayerCommands(Player &player, Clock &clock, Map &map, std::vector<T
         int costTicks = getCommandCost(nameToType(cmd.name));
         cmd.executeAt = clock.now() + clock.milliseconds(costTicks);
         if (nameToType(cmd.name) == INCANTATION) {
-            incantationStart(player, map, clients, clock);
+            incantationStart(player, map, clients);
             cmd.started = true;
         }
         return;
