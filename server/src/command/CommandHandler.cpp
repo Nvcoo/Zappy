@@ -84,6 +84,10 @@ std::string executeCommand(Player &player, const Command &cmd, Map &map, std::ve
             return executeFork(player, teams);
         case EJECT:
             return executeEject(player, map, clients);
+        case INCANTATION:
+            if (cmd.started)
+                return incantationEnd(player, map, clients);
+            return "ko\n";
         case UNKNOWN:
             return "ko\n";
         default:
