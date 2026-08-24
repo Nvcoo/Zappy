@@ -1,0 +1,41 @@
+/*
+** EPITECH PROJECT, 2026
+** Zappy
+** File description:
+** TcpClient
+*/
+
+#ifndef TCPCLIENT_HPP_
+    #define TCPCLIENT_HPP_
+
+#include <iostream>
+#include <string>
+#include <unistd.h>
+
+class TcpClient {
+    private:
+        int _socket;
+        std::string _buffer;
+        bool _connected;
+    protected:
+    public: //socket is initialized to -1 cuz its not a valid fd yet.
+        TcpClient() : _socket(-1), _connected(false) {}
+        ~TcpClient()
+        {
+            if (_socket >= 0)
+                close(_socket);
+        }
+        void sendMessage(const std::string &msg)
+        {
+            if (write(_socket, msg.c_str(), msg.size()) < 0)
+                std::cerr << "Failed to send message" << std::endl;
+        }
+        bool isConnected() const
+        {
+            return _connected;
+        }
+        bool connectTo(const std::string &host, int port);
+        bool receiveLine(std::string &line);
+};
+
+#endif

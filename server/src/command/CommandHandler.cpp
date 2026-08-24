@@ -7,6 +7,10 @@
 
 #include "../../include/command/CommandHandler.hpp"
 #include "../../include/command/Actions.hpp"
+#include "../../include/command/GuiNotify.hpp"
+#include <memory>
+#include <string>
+#include <vector>
 
 Command parseCommand(const std::string &line)
 {
@@ -21,6 +25,7 @@ Command parseCommand(const std::string &line)
         cmd.arg = line.substr(spacePos + 1);
     }
     cmd.executeAt = 0;
+    cmd.started = false;
     return cmd;
 }
 
@@ -56,34 +61,34 @@ int getCommandCost(CommandType type)
     }
 }
 
-std::string executeCommand(Player &player, const Command &cmd, Map &map, std::vector<Team> &teams, std::vector<std::shared_ptr<Client>> &clients)
+std::string executeCommand(std::shared_ptr<Player> player, const Command &cmd, Map &map, std::vector<Team> &teams, std::vector<std::shared_ptr<Client>> &clients)
 {
     switch (nameToType(cmd.name)) {
         case FORWARD:
-            moveForward(player, map);
+            notifyForward(player, map, clients);
             return "ok\n";
         case LEFT:
-            rotateLeft(player);
+            notifyLeft(player, clients);
             return "ok\n";
         case RIGHT:
-            rotateRight(player);
+            notifyRight(player, clients);
             return "ok\n";
         case INVENTORY:
-            return executeInventory(player);
+            return executeInventory(*player);
         case TAKE:
-            return executeTake(player, map, cmd.arg);
+            return notifyTake(player, map, cmd.arg, clients);
         case SET:
-            return executeSet(player, map, cmd.arg);
+            return notifySet(player, map, cmd.arg, clients);
         case CONNECT_NBR:
-            return executeConnectNbr(player, teams);
+            return executeConnectNbr(*player, teams);
         case BROADCAST:
-            return executeBroadcast(player, cmd.arg, clients, map);
+            return notifyBroadcast(player, map, cmd.arg, clients);
         case LOOK:
-            return executeLook(player, map, clients);
+            return executeLook(*player, map, clients);
         case FORK:
-            return executeFork(player, teams);
+            return notifyFork(player, teams, clients);
         case EJECT:
-            return executeEject(player, map, clients);
+            return notifyEject(player, map, teams, clients);
         case INCANTATION:
             if (cmd.started)
                 return incantationEnd(player, map, clients);
@@ -95,20 +100,22 @@ std::string executeCommand(Player &player, const Command &cmd, Map &map, std::ve
     }
 }
 
-void processPlayerCommands(Player &player, Clock &clock, Map &map, std::vector<Team> &teams, std::vector<std::shared_ptr<Client>> &clients)
+void processPlayerCommands(std::shared_ptr<Player> player, Clock &clock, Map &map, std::vector<Team> &teams, std::vector<std::shared_ptr<Client>> &clients)
 {
-    if (!player.hasCommand())
-        return;
-    if (player.isBusy() && !player.isInIncantation())
+    if (!player->hasCommand())
         return;
 
-    Command &cmd = player.frontCommand();
+    Command &cmd = player->frontCommand();
+    bool isOwnIncantation = player->isInIncantation() && nameToType(cmd.name) == INCANTATION;
+
+    if (player->isBusy() && !isOwnIncantation)
+        return;
 
     if (cmd.executeAt == 0) {
         int costTicks = getCommandCost(nameToType(cmd.name));
         cmd.executeAt = clock.now() + clock.milliseconds(costTicks);
         if (nameToType(cmd.name) == INCANTATION) {
-            incantationStart(player, map, clients);
+            incantationStart(*player, map, clients);
             cmd.started = true;
         }
         return;
@@ -117,6 +124,6 @@ void processPlayerCommands(Player &player, Clock &clock, Map &map, std::vector<T
         return;
     std::string response = executeCommand(player, cmd, map, teams, clients);
     if (!response.empty())
-        player.sendMessage(response);
-    player.popCommand();
+        player->sendMessage(response);
+    player->popCommand();
 }

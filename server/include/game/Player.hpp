@@ -8,6 +8,7 @@
 #ifndef PLAYER_HPP_
     #define PLAYER_HPP_
 
+#include <cstdlib>
 #include <cstring>
 #include <queue>
 #include <string>
@@ -40,9 +41,11 @@ class Player : public Client {
         std::queue<Command> _commandQueue;
         bool _busy;
         bool _inIncantation;
+        int _id;
+        static int _nextId;
     protected:
     public:
-        Player(int fd, const std::string &teamName, int x, int y) : Client(fd, PLAYER), _x(x), _y(y), _orientation(NORTH), _level(1), _lifeTimer(1260), _teamName(teamName), _busy(false), _inIncantation(false)
+        Player(int fd, const std::string &teamName, int x, int y) : Client(fd, PLAYER), _x(x), _y(y), _orientation(static_cast<orientation_t>(1 + std::rand() % 4)), _level(1), _lifeTimer(126), _teamName(teamName), _busy(false), _inIncantation(false), _id(_nextId++)
         {
             std::memset(_inventory, 0, sizeof(_inventory));
             _inventory[FOOD] = 10;
@@ -80,7 +83,6 @@ class Player : public Client {
         {
             return _busy;
         }
-
         void setPos(int x, int y)
         {
             _x = x;
@@ -110,9 +112,13 @@ class Player : public Client {
         {
             _inIncantation = v;
         }
+        int getId() const
+        {
+            return _id;
+        }
         void addToInv(Resource r, int amount);
         void removeFromInv(Resource r, int amount);
-        void decrementLife(int amount);
+        int decrementLife(int amount);
 
         bool pushCommand(const Command &cmd);
         bool hasCommand() const;

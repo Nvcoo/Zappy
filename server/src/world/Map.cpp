@@ -52,8 +52,10 @@ int Map::computeDensity(Resource r) const
     return target < 1 ? 1 : target;
 }
 
-void Map::spawnResources()
+std::vector<std::pair<int, int>> Map::spawnResources()
 {
+    std::vector<std::pair<int, int>> changedTiles;
+
     for (int i = 0; i < RESOURCE_COUNT; i++) {
         Resource r = static_cast<Resource>(i);
         int target = computeDensity(r);
@@ -65,6 +67,8 @@ void Map::spawnResources()
             int x = std::rand() % _width;
             int y = std::rand() % _height;
             getTile(x, y).addResource(r, 1);
+            changedTiles.push_back({x, y});
         }
     }
+    return changedTiles;
 }

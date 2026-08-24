@@ -13,6 +13,8 @@
 #include "../world/Map.hpp"
 #include "../world/Team.hpp"
 #include "../game/Clock.hpp"
+#include "GuiClient.hpp"
+#include "../command/GuiNotify.hpp"
 #include <cstddef>
 #include <memory>
 #include <vector>
@@ -35,6 +37,7 @@ class Server {
         std::vector<Team> _teams;
         Clock _clock;
         Team *findTeam(const std::string &name);
+        void notifyGui(std::function<void(GuiClient &)> fn);
         void updateGame();
     protected:
     public:

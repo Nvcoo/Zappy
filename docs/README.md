@@ -1,9 +1,10 @@
-# Zappy Server
+# Zappy Server Game
 
 A server, created in C, that generates the inhabitants’ world.
 
 ## Usage
 
+server:
 ```sh
 USAGE: ./zappy_server -p port -x width -y height -n name1 name2 ... -c clientsNb -f freq --auto-start on|off --display-eggs true|false [-v | --verbose]
 	port		is the port number
@@ -21,9 +22,23 @@ The server is executed in the form of one, single process and one, single thread
 It must use select to handle socket multiplexing; the select must unlock only if something happen on a
 socket or if an event is ready to be executed.
 
-
 > The team name GRAPHIC is reserved for the GUI to authenticate itself as such to the server.
 
+GUI:
+```sh
+./zappy_gui -p 4242 -h localhost
+```
+
+Player:
+```sh
+nc localhost 4242
+```
+AI:
+```sh
+./zappy_ai -p 4242 -n nameX -h localhost
+
+    nameX   is the name of an existing team
+```
 
 ## AI protocol
 
@@ -202,3 +217,6 @@ The server accepts command in its standard input.
 | /noRefill true or false | disable the map refill |
 | /fork team x y | simulate a fork for the given team at the given position |
 | /incantate x y | simulate an incantation of the given level at the given position |
+
+## License
+MIT

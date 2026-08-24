@@ -18,7 +18,7 @@
 
 Command parseCommand(const std::string &line);
 int getCommandCost(CommandType type);
-std::string executeCommand(Player &player, const Command &cmd, Map &map, std::vector<Team> &teams, std::vector<std::shared_ptr<Client>> &clients);
-void processPlayerCommands(Player &player, Clock &clock, Map &map, std::vector<Team> &teams, std::vector<std::shared_ptr<Client>> &clients);
+std::string executeCommand(std::shared_ptr<Player> player, const Command &cmd, Map &map, std::vector<Team> &teams, std::vector<std::shared_ptr<Client>> &clients);
+void processPlayerCommands(std::shared_ptr<Player> player, Clock &clock, Map &map, std::vector<Team> &teams, std::vector<std::shared_ptr<Client>> &clients);
 
 #endif

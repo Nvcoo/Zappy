@@ -9,7 +9,6 @@
 
 Tile::Tile()
 {
-    _playerCount = 0;
     _resources.fill(0);
 }
 
@@ -28,20 +27,4 @@ void Tile::removeResource(Resource r, int amount)
     _resources[r] -= amount;
     if (_resources[r] < 0)
         _resources[r] = 0;
-}
-
-int Tile::getPlayerCount() const
-{
-    return _playerCount;
-}
-
-void Tile::addPlayer()
-{
-    _playerCount++;
-}
-
-void Tile::removePlayer()
-{
-    if (_playerCount > 0)
-        _playerCount--;
 }

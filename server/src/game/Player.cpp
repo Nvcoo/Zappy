@@ -7,6 +7,8 @@
 
 #include "../../include/game/Player.hpp"
 
+int Player::_nextId = 0;
+
 void Player::addToInv(Resource r, int amount)
 {
     _inventory[r] += amount;
@@ -19,11 +21,19 @@ void Player::removeFromInv(Resource r, int amount)
         _inventory[r] = 0;
 }
 
-void Player::decrementLife(int amount)
+int Player::decrementLife(int amount)
 {
     _lifeTimer -= amount;
+
+    int eaten = 0;
+    while (_lifeTimer <= 0 && _inventory[FOOD] > 0) {
+        _inventory[FOOD]--;
+        _lifeTimer += 126;
+        eaten++;
+    }
     if (_lifeTimer < 0)
         _lifeTimer = 0;
+    return eaten;
 }
 
 bool Player::pushCommand(const Command &cmd)

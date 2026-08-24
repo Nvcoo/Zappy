@@ -8,17 +8,9 @@
 #include "../../include/network/Server.hpp"
 #include "../../include/game/Player.hpp"
 #include "../../include/command/CommandHandler.hpp"
-#include <cmath>
-#include <string>
-#include <sys/poll.h>
 #include <unistd.h>
 #include <iostream>
-#include <stdexcept>
-#include <sys/socket.h>
 #include <netinet/in.h>
-#include <cstring>
-#include <utility>
-#include <cstdlib>
 
 Server::Server(const Args &args) : _listenFd(-1), _args(args), _map(args.width, args.height), _clock(args.freq)
 {
@@ -84,91 +76,15 @@ void Server::run()
     }
 }
 
-void Server::acceptNewClient()
-{
-    struct sockaddr_in clientAddr;
-    socklen_t clientAddrLen = sizeof(clientAddr);
-    int clientFd = accept(_listenFd, (struct sockaddr *)&clientAddr, &clientAddrLen);
-
-    if (clientFd < 0) {
-        std::cerr << "the accept failed" << std::endl;
-        return;
-    }
-
-    struct pollfd pfd;
-    pfd.fd = clientFd;
-    pfd.events = POLLIN;
-    pfd.revents = 0;
-    _pollFds.push_back(pfd);
-    _clients.push_back(std::make_shared<Client>(clientFd, PLAYER));
-    _clients.back()->sendMessage("WELCOME\n");
-    std::cout << "New client connected on fd " << clientFd << std::endl;
-}
-
-void Server::handleClientData(size_t index)
-{
-    auto &client = _clients[index - 1];
-    char buffer[1024];
-    ssize_t bytesRead = read(client->getFd(), buffer, sizeof(buffer) - 1);
-
-    if (bytesRead <= 0) {
-        removeClient(index);
-        return;
-    }
-    buffer[bytesRead] = '\0';
-    client->appendToBuffer(std::string(buffer, bytesRead));
-    if (client->hasOverflow()) {
-        std::cerr << "Disconnecting client on fd " << client->getFd() << " due to buffer overflow" << std::endl;
-        removeClient(index);
-        return;
-    }
-    while (client->hasLine()) {
-        std::string line = client->popLine();
-        processLine(_clients[index - 1], line);
-    }
-}
-
-void Server::removeClient(size_t index)
-{
-    std::cout << "Client on fd " << _pollFds[index].fd << " has been disconected" << std::endl;
-    close(_pollFds[index].fd);
-    _pollFds.erase(_pollFds.begin() + index);
-    _clients.erase(_clients.begin() + (index - 1));
-}
-
-int Server::findClientIndex(int fd)
-{
-    for (size_t i = 0; i < _clients.size(); i++) {
-        if (_clients[i]->getFd() == fd)
-            return static_cast<int>(i);
-    }
-    return -1;
-}
-
-void Server::handleTeamName(Client &client, const std::string &teamName)
-{
-    Team *team = findTeam(teamName);
-    if (team == nullptr || team->getAvailableSlots() <= 0) {
-        client.sendMessage("ko\n");
-        return;
-    }
-
-    Egg egg = team->popEgg();
-    auto new_player = std::make_shared<Player>(client.getFd(), teamName, egg.x, egg.y);
-    team->addClient();
-
-    int index = findClientIndex(client.getFd());
-    _clients[index] = std::move(new_player);
-
-    std::string response = std::to_string(team->getAvailableSlots()) + "\n";
-    response += std::to_string(_map.getWidth()) + " " + std::to_string(_map.getHeight()) + "\n";
-    _clients[index]->sendMessage(response);
-}
-
 void Server::processLine(std::shared_ptr<Client> client, const std::string &line)
 {
-    auto player = std::dynamic_pointer_cast<Player>(client);
+    auto gui = std::dynamic_pointer_cast<GuiClient>(client);
+    if (gui != nullptr) {
+        gui->parseCommand(line, _map, _teams, _clients, _args.freq);
+        return;
+    }
 
+    auto player = std::dynamic_pointer_cast<Player>(client);
     if (player == nullptr) {
         handleTeamName(*client, line);
         return;
@@ -179,39 +95,12 @@ void Server::processLine(std::shared_ptr<Client> client, const std::string &line
         std::cout << "Command queue full for player on fd " << player->getFd() << std::endl;
 }
 
-Team *Server::findTeam(const std::string &name)
+void Server::notifyGui(std::function<void(GuiClient &)> fn)
 {
-    for (auto &team : _teams) {
-        if (team.getName() == name)
-            return &team;
-    }
-    return nullptr;
-}
-
-void Server::updateGame()
-{
-    if (_clock.respawn()) {
-        _map.spawnResources();
-        _clock.resetSpawn();
-        std::cout << "Resources respawned" << std::endl;
-    }
-
-    int elapsedTicks = _clock.elapsedTicks();
-    if (elapsedTicks <= 0)
-        return;
-
-    for (size_t i = 0; i < _clients.size(); i++) {
-        auto player = std::dynamic_pointer_cast<Player>(_clients[i]);
-        if (player == nullptr)
-            continue;
-        player->decrementLife(elapsedTicks);
-        if (player->isDead()) {
-            std::cout << "Player on fd " << player->getFd() << " has died" << std::endl;
-            player->sendMessage("dead\n");
-            removeClient(i + 1);
-            i--;
-            continue;
-        }
-        processPlayerCommands(*player, _clock, _map, _teams, _clients);
-    }
+    //for (auto &client : _clients) {
+    //    auto gui = std::dynamic_pointer_cast<GuiClient>(client);
+    //    if (gui != nullptr)
+    //        fn(*gui);
+    //}
+    broadcastGui(_clients, fn);
 }

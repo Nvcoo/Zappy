@@ -66,6 +66,11 @@ Args parseArgs(int ac, char **av)
         for (int i = 1; i < ac; i++) {
             std::string flag = av[i];
 
+            if (flag == "--help") {
+                printUsage(av[0]);
+                std::exit(0);
+            }
+
             if (flag == "-n") {
                 args.teamNames = parseTeamNames(i, ac, av);
                 continue;

@@ -13,6 +13,12 @@ SRC =	main.cpp \
 		src/network/Server.cpp \
 		src/network/Args.cpp \
 		src/network/Client.cpp \
+		src/network/graphic/GuiClient.cpp \
+		src/network/graphic/GuiEvents.cpp \
+		src/network/graphic/GuiRequests.cpp \
+		src/network/server/Game.cpp \
+		src/network/server/Handshake.cpp \
+		src/network/server/Polling.cpp \
 		src/world/Tile.cpp \
 		src/world/Map.cpp \
 		src/world/Team.cpp \
@@ -26,7 +32,8 @@ SRC =	main.cpp \
 		src/command/actions/Inventory.cpp \
 		src/command/actions/Movement.cpp \
 		src/command/actions/Utilities.cpp \
-		src/command/actions/Incantation.cpp
+		src/command/actions/Incantation.cpp \
+		src/command/actions/GuiNotify.cpp
 
 OBJ = $(SRC:.cpp=.o)
 

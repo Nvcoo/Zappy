@@ -72,7 +72,7 @@ std::string executeFork(Player &player, std::vector<Team> &teams)
     return "ok\n";
 }
 
-std::string executeEject(Player &player, Map &map, std::vector<std::shared_ptr<Client>> &clients)
+EjectResult executeEject(Player &player, Map &map, std::vector<Team> &teams, std::vector<std::shared_ptr<Client>> &clients)
 {
     std::vector<std::shared_ptr<Player>> eject;
 
@@ -90,7 +90,14 @@ std::string executeEject(Player &player, Map &map, std::vector<std::shared_ptr<C
         }
     }
     if (eject.empty()) {
-        return "ok\n";
+        return {"ko\n", {}, {}};
+    }
+
+    //Ejecting also destroys any eggs laid on this tile
+    std::vector<Egg> destroyedEggs;
+    for (auto &team : teams) {
+        auto removed = team.removeEggsAt(player.getX(), player.getY());
+        destroyedEggs.insert(destroyedEggs.end(), removed.begin(), removed.end());
     }
 
     //Calculate the direction from which the ejected players came from
@@ -105,6 +112,7 @@ std::string executeEject(Player &player, Map &map, std::vector<std::shared_ptr<C
     int w = map.getWidth();
     int h = map.getHeight();
 
+    //Eject the players
     for (auto &p : eject) {
         int newX = p->getX();
         int newY = p->getY();
@@ -117,5 +125,5 @@ std::string executeEject(Player &player, Map &map, std::vector<std::shared_ptr<C
         p->setPos(newX, newY);
         p->sendMessage("eject: " + std::to_string(k) + "\n");
     }
-    return "ok\n";
+    return {"ok\n", eject, destroyedEggs};
 }

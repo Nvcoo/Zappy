@@ -31,9 +31,11 @@ class Team {
         int getMaxClients() const;
         int getConnectedClients() const;
         int getAvailableSlots() const;
+        const std::vector<Egg> &getEggs() const;
         void addEgg(int x, int y);
         bool hasEgg();
         Egg popEgg();
+        std::vector<Egg> removeEggsAt(int x, int y);
         void addClient();
         void removeClient();
 };

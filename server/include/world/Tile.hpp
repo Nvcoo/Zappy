@@ -23,7 +23,6 @@ enum Resource {
 
 class Tile {
     private:
-        int _playerCount;
         std::array<int, RESOURCE_COUNT> _resources;
     protected:
     public:
@@ -31,9 +30,6 @@ class Tile {
         int getResource(Resource r) const;
         void addResource(Resource r, int amount);
         void removeResource(Resource r, int amount);
-        int getPlayerCount() const;
-        void addPlayer();
-        void removePlayer();
 };
 
 #endif

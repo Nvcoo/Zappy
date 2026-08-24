@@ -50,5 +50,6 @@ std::string Client::popLine()
 
 void Client::sendMessage(const std::string &message) const
 {
-    write(_fd, message.c_str(), message.size());
+    if (write(_fd, message.c_str(), message.size()) < 0)
+        std::cerr << "Failed to send message to fd " << _fd << std::endl;
 }
